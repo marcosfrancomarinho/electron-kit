@@ -1,0 +1,47 @@
+{
+  "name": "electron-kit",
+  "version": "0.1.0",
+  "description": "A minimal, type-safe toolkit for Electron applications.",
+  "type": "module",
+  "bin": {
+    "electron-kit": "./dist/cli.js"
+  },
+  "exports": {
+    "./node": {
+      "types": "./dist/node.d.ts",
+      "default": "./dist/node.js"
+    },
+    "./browser": {
+      "types": "./dist/browser.d.ts",
+      "default": "./dist/browser.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "dev": "node scripts/build.mjs --watch",
+    "type": "tsc --noEmit",
+    "package": "npm run build"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "dependencies": {
+    "electron": "^44.5.1",
+    "electron-builder": "^26.15.3",
+    "esbuild": "^0.28.2"
+  },
+  "devDependencies": {
+    "typescript": "^7.0.2"
+  },
+  "keywords": [
+    "electron",
+    "typescript",
+    "cli",
+    "desktop",
+    "ipc"
+  ],
+  "license": "MIT"
+}
