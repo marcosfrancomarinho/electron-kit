@@ -3,7 +3,7 @@
 import { buildProject } from './commands/build.js';
 import { dev } from './commands/dev.js';
 import { packageProject } from './commands/package.js';
-import { generateTypes } from './commands/type.js';
+import { typeProject } from './commands/type.js';
 
 const command = process.argv[2];
 
@@ -19,7 +19,7 @@ try {
       await packageProject();
       break;
     case 'type':
-      await generateTypes();
+      await typeProject();
       break;
     default:
       console.log(`electron-kit
