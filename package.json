@@ -1,52 +1,48 @@
 {
-  "name": "electron-kit",
+  "name": "create-electron-kit",
   "version": "0.1.0",
-  "description": "Minimal TypeScript CLI for Electron with typed Node-to-Browser providers.",
+  "description": "Create a minimal, type-safe Electron + TypeScript project.",
   "type": "module",
-  "main": "dist/bundle.js",
+  "main": "dist/bundle.cjs",
   "source": "src/main.ts",
   "bin": {
-    "electron-kit": "dist/bundle.js"
+    "create-electron-kit": "dist/bundle.cjs"
   },
-  "exports": {
-    "./node": {
-      "types": "./dist/node.d.ts",
-      "default": "./dist/node.js"
-    },
-    "./browser": {
-      "types": "./dist/browser.d.ts",
-      "default": "./dist/browser.js"
-    }
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/marcosfrancomarinho/electron-kit.git"
+  },
+  "author": "Marcos Marinho",
+  "license": "MIT",
+  "engines": {
+    "node": ">=22"
   },
   "scripts": {
-    "start": "node --enable-source-maps dist/bundle.js",
+    "start": "node --enable-source-maps dist/bundle.cjs",
     "dev": "node kit-dev/build/dev.cjs",
     "build": "node kit-dev/build/esbuild.config.cjs",
     "type": "node kit-dev/build/type.cjs",
     "prepack": "npm run build"
   },
-  "engines": {
-    "node": ">=22"
-  },
-  "dependencies": {
-    "electron": "^44.5.1",
-    "electron-builder": "^26.15.3",
+  "devDependencies": {
+    "@types/node": "^22.0.0",
     "esbuild": "^0.28.2",
     "typescript": "7.0.2"
   },
   "files": [
-    "dist",
-    "README.md",
-    "LICENSE"
+    "dist/bundle.cjs",
+    "dist/bundle.cjs.map",
+    "src/templates/files"
   ],
   "keywords": [
     "electron",
     "typescript",
     "cli",
-    "desktop",
-    "ipc",
-    "type-safe"
-  ],
-  "author": "Marcos Marinho",
-  "license": "MIT"
+    "create-electron-app",
+    "project-generator",
+    "scaffolding",
+    "esbuild",
+    "type-safe",
+    "ipc"
+  ]
 }
