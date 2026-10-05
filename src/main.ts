@@ -1,37 +1,20 @@
 #!/usr/bin/env node
+import { CliApplication } from './presentation/cli/cli-application.js';
+import { CreateProject } from './application/create-project.js';
+import { NodeProjectScaffolder } from './infrastructure/project/node-project-scaffolder.js';
+import { NodePackageManagerDetector } from './infrastructure/package-manager/node-package-manager-detector.js';
+import { NodePathResolver } from './infrastructure/project/node-path-resolver.js';
+import { TerminalAdapter } from './presentation/terminal/terminal-adapter.js';
+import { TerminalPalette } from './presentation/terminal/terminal-palette.js';
 
-import { buildProject } from './commands/build.js';
-import { dev } from './commands/dev.js';
-import { packageProject } from './commands/package.js';
-import { typeProject } from './commands/type.js';
+const terminal = new TerminalAdapter(new TerminalPalette());
+const createProject = new CreateProject(
+  new NodeProjectScaffolder(terminal),
+  new NodePathResolver(),
+);
 
-const command = process.argv[2];
-
-try {
-  switch (command) {
-    case 'dev':
-      await dev();
-      break;
-    case 'build':
-      await buildProject();
-      break;
-    case 'package':
-      await packageProject();
-      break;
-    case 'type':
-      await typeProject();
-      break;
-    default:
-      console.log(`Electron Kit
-
-Commands:
-  electron-kit dev
-  electron-kit build
-  electron-kit package
-  electron-kit type
-`);
-  }
-} catch (error) {
-  console.error(error instanceof Error ? error.message : error);
-  process.exitCode = 1;
-}
+void new CliApplication(
+  createProject,
+  terminal,
+  new NodePackageManagerDetector(),
+).run();
