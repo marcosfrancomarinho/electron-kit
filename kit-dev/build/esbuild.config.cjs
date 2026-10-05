@@ -1,27 +1,28 @@
 const { execFileSync } = require('node:child_process');
-const { resolve } = require('node:path');
+const { dirname, resolve } = require('node:path');
 const { build } = require('esbuild');
 
 const projectRoot = resolve(__dirname, '..', '..');
 
-const entries = {
-  bundle: resolve(projectRoot, 'src', 'main.ts'),
-  node: resolve(projectRoot, 'src', 'node.ts'),
-  browser: resolve(projectRoot, 'src', 'browser.ts'),
-};
+function compilerPath() {
+  const packagePath = require.resolve('typescript/package.json', {
+    paths: [projectRoot],
+  });
+  const { bin } = require(packagePath);
+  const compiler = typeof bin === 'string' ? bin : bin?.tsc;
+
+  if (!compiler) {
+    throw new Error('The installed TypeScript package does not provide tsc.');
+  }
+
+  return resolve(dirname(packagePath), compiler);
+}
 
 function checkTypes() {
   console.log('\n🔎 TypeScript');
 
   try {
-    const packagePath = require.resolve('typescript/package.json', {
-      paths: [projectRoot],
-    });
-    const { bin } = require(packagePath);
-    const compiler = typeof bin === 'string' ? bin : bin?.tsc;
-    const tscPath = resolve(require('node:path').dirname(packagePath), compiler);
-
-    execFileSync(process.execPath, [tscPath, '--noEmit'], {
+    execFileSync(process.execPath, [compilerPath(), '--noEmit'], {
       cwd: projectRoot,
       stdio: 'inherit',
     });
@@ -34,44 +35,16 @@ function checkTypes() {
   return true;
 }
 
-async function emitDeclarations() {
-  const packagePath = require.resolve('typescript/package.json', {
-    paths: [projectRoot],
-  });
-  const { bin } = require(packagePath);
-  const compiler = typeof bin === 'string' ? bin : bin?.tsc;
-  const tscPath = resolve(require('node:path').dirname(packagePath), compiler);
-
-  execFileSync(
-    process.execPath,
-    [
-      tscPath,
-      '--declaration',
-      '--emitDeclarationOnly',
-      '--declarationMap',
-      'false',
-      '--noEmit',
-      'false',
-      '--outDir',
-      'dist',
-    ],
-    {
-      cwd: projectRoot,
-      stdio: 'inherit',
-    },
-  );
-}
-
 const buildOptions = {
   absWorkingDir: projectRoot,
-  entryPoints: entries,
-  outdir: resolve(projectRoot, 'dist'),
+  entryPoints: [resolve(projectRoot, 'src', 'main.ts')],
   bundle: true,
+  outfile: resolve(projectRoot, 'dist', 'bundle.cjs'),
   sourcemap: true,
   platform: 'node',
-  format: 'esm',
+  format: 'cjs',
   target: ['node22'],
-  packages: 'external',
+  packages: 'bundle',
   logLevel: 'warning',
 };
 
@@ -84,14 +57,11 @@ async function runBuild() {
   }
 
   console.log('\n📦 Build');
-
   await build(buildOptions);
-  await emitDeclarations();
 
   console.log('✅ Generated files:');
-  console.log('   📄 dist/bundle.js');
-  console.log('   📄 dist/node.js');
-  console.log('   📄 dist/browser.js');
+  console.log('   📄 dist/bundle.cjs');
+  console.log('   🗺️  dist/bundle.cjs.map');
   console.log('\n⚡ Completed in ' + (Date.now() - startedAt) + 'ms');
 }
 
