@@ -1,10 +1,12 @@
 {
   "name": "electron-kit",
   "version": "0.1.0",
-  "description": "A minimal, type-safe toolkit for Electron applications.",
+  "description": "Minimal TypeScript CLI for Electron with typed Node-to-Browser providers.",
   "type": "module",
+  "main": "dist/bundle.js",
+  "source": "src/main.ts",
   "bin": {
-    "electron-kit": "./dist/cli.js"
+    "electron-kit": "dist/bundle.js"
   },
   "exports": {
     "./node": {
@@ -16,14 +18,12 @@
       "default": "./dist/browser.js"
     }
   },
-  "files": [
-    "dist"
-  ],
   "scripts": {
-    "build": "node scripts/build.mjs",
-    "dev": "node scripts/build.mjs --watch",
-    "type": "tsc --noEmit",
-    "package": "npm run build"
+    "start": "node --enable-source-maps dist/bundle.js",
+    "dev": "node kit-dev/build/dev.cjs",
+    "build": "node kit-dev/build/esbuild.config.cjs",
+    "type": "node kit-dev/build/type.cjs",
+    "prepack": "npm run build"
   },
   "engines": {
     "node": ">=22"
@@ -32,14 +32,21 @@
     "electron": "^44.5.1",
     "electron-builder": "^26.15.3",
     "esbuild": "^0.28.2",
-    "typescript": "^7.0.2"
+    "typescript": "7.0.2"
   },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
   "keywords": [
     "electron",
     "typescript",
     "cli",
     "desktop",
-    "ipc"
+    "ipc",
+    "type-safe"
   ],
+  "author": "Marcos Marinho",
   "license": "MIT"
 }
