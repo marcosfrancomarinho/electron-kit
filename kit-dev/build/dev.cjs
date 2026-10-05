@@ -4,8 +4,7 @@ const { build, context } = require('esbuild');
 const { buildOptions } = require('./esbuild.config.cjs');
 
 const projectRoot = resolve(__dirname, '..', '..');
-const outputFile = resolve(__dirname, '.cache', 'dev-bundle.js');
-
+const outputFile = resolve(__dirname, '.cache', 'dev-bundle.cjs');
 let child;
 let buildContext;
 let restartPending = false;
@@ -23,29 +22,21 @@ function waitForExit(processToStop) {
   }
 
   return new Promise((resolveExit) => {
-    const finish = (code) => resolveExit(code ?? 0);
-    processToStop.once('exit', finish);
+    processToStop.once('exit', (code) => resolveExit(code ?? 0));
     processToStop.kill('SIGTERM');
   });
 }
 
 function startChild() {
-  const nextChild = spawn(
-    process.execPath,
-    ['--enable-source-maps', outputFile],
-    {
-      cwd: projectRoot,
-      stdio: 'inherit',
-    },
-  );
+  const nextChild = spawn(process.execPath, ['--enable-source-maps', outputFile], {
+    cwd: projectRoot,
+    stdio: 'inherit',
+  });
 
   child = nextChild;
-
   nextChild.once('exit', () => {
     if (child === nextChild) child = undefined;
   });
-
-  return nextChild;
 }
 
 async function stopChild() {
@@ -56,10 +47,7 @@ async function stopChild() {
 
 async function restartChild() {
   await stopChild();
-
-  if (shuttingDown) return;
-
-  startChild();
+  if (!shuttingDown) startChild();
 }
 
 function queueRestart() {
@@ -80,7 +68,7 @@ function queueRestart() {
 }
 
 const restartPlugin = {
-  name: 'electron-kit-restart',
+  name: 'electron-kit-generator-restart',
   setup(esbuild) {
     esbuild.onStart(() => {
       if (initialBuild) {
@@ -98,54 +86,35 @@ const restartPlugin = {
   },
 };
 
-function developmentBuildOptions() {
-  return {
-    ...buildOptions,
-    entryPoints: [resolve(projectRoot, 'src', 'main.ts')],
-    outdir: undefined,
-    outfile: outputFile,
-    bundle: true,
-    minify: false,
-    sourcemap: 'inline',
-    logLevel: 'info',
-  };
-}
-
 async function runOnce() {
-  await build(developmentBuildOptions());
-
-  const processToRun = startChild();
-
-  await new Promise((resolveExit) => {
-    processToRun.once('exit', (code) => {
-      process.exitCode = code ?? 1;
-      resolveExit();
-    });
+  await build({
+    ...buildOptions,
+    outfile: outputFile,
+    sourcemap: 'inline',
   });
+
+  startChild();
 }
 
 async function runWatch() {
   buildContext = await context({
-    ...developmentBuildOptions(),
+    ...buildOptions,
+    outfile: outputFile,
+    sourcemap: 'inline',
     plugins: [restartPlugin],
   });
 
   await buildContext.watch();
-  console.log('Electron Kit: watching for changes...');
+  console.log('Electron Kit generator: watching for changes...');
 }
 
 async function shutdown() {
   if (shuttingDown) return;
-
   shuttingDown = true;
   restartPending = false;
-
   if (restartTask) await restartTask;
   await stopChild();
-
-  if (buildContext) {
-    await buildContext.dispose();
-  }
+  if (buildContext) await buildContext.dispose();
 }
 
 async function run() {
