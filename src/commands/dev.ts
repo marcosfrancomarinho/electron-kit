@@ -1,29 +1,78 @@
-import { spawn } from 'node:child_process';
+import { watch } from 'node:fs';
+import { spawn, type ChildProcess } from 'node:child_process';
 import { resolve } from 'node:path';
+import electron from 'electron';
 import { buildProject } from './build.js';
-import { distDir } from '../project.js';
+import { distDir, root } from '../project.js';
 
-export async function dev() {
-  await buildProject();
+let child: ChildProcess | undefined;
+let timer: NodeJS.Timeout | undefined;
+let rebuilding = false;
+let pending = false;
 
-  const main = resolve(distDir, 'main.cjs');
+async function startElectron() {
+  child?.kill();
+
+  const main = resolve(distDir, 'main.mjs');
   const preload = resolve(distDir, 'preload.cjs');
 
-  const child = spawn(
-    process.platform === 'win32' ? 'electron.cmd' : 'electron',
-    [main],
-    {
-      stdio: 'inherit',
-      env: {
-        ...process.env,
-        ELECTRON_KIT_PRELOAD: preload,
-        ELECTRON_KIT_DEV: '1'
-      },
-      shell: process.platform === 'win32'
+  child = spawn(electron as unknown as string, [main], {
+    stdio: 'inherit',
+    env: {
+      ...process.env,
+      ELECTRON_KIT_PRELOAD: preload,
+      ELECTRON_KIT_DEV: '1'
+    }
+  });
+}
+
+async function rebuild() {
+  if (rebuilding) {
+    pending = true;
+    return;
+  }
+
+  rebuilding = true;
+
+  try {
+    await buildProject();
+    await startElectron();
+  } catch (error) {
+    console.error(error instanceof Error ? error.message : error);
+  } finally {
+    rebuilding = false;
+
+    if (pending) {
+      pending = false;
+      await rebuild();
+    }
+  }
+}
+
+export async function dev() {
+  await rebuild();
+
+  const watcher = watch(
+    resolve(root, 'src'),
+    { recursive: true },
+    () => {
+      clearTimeout(timer);
+      timer = setTimeout(() => void rebuild(), 120);
     }
   );
 
-  child.on('exit', code => {
-    process.exitCode = code ?? 0;
+  const close = () => {
+    watcher.close();
+    child?.kill();
+  };
+
+  process.once('SIGINT', () => {
+    close();
+    process.exit(0);
+  });
+
+  process.once('SIGTERM', () => {
+    close();
+    process.exit(0);
   });
 }
