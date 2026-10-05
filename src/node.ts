@@ -1,4 +1,6 @@
 import { ipcMain } from 'electron';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import type { ProviderMap, ProviderValue } from './shared.js';
 
 const channel = 'electron-kit:invoke';
@@ -72,13 +74,9 @@ export type ProviderRegistry<T> =
   T extends Providers<infer Registry> ? Registry : never;
 
 export function preloadPath() {
-  const path = process.env.ELECTRON_KIT_PRELOAD;
-
-  if (!path) {
-    throw new Error(
-      'Electron Kit preload path is unavailable. Run the app with electron-kit dev or build.'
-    );
+  if (process.env.ELECTRON_KIT_PRELOAD) {
+    return process.env.ELECTRON_KIT_PRELOAD;
   }
 
-  return path;
+  return join(dirname(fileURLToPath(import.meta.url)), 'preload.cjs');
 }
