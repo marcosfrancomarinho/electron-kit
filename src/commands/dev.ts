@@ -1,9 +1,12 @@
 import { watch } from 'node:fs';
 import { spawn, type ChildProcess } from 'node:child_process';
+import { createRequire } from 'node:module';
 import { resolve } from 'node:path';
-import electron from 'electron';
 import { buildProject } from './build.js';
 import { distDir, root } from '../project.js';
+
+const require = createRequire(import.meta.url);
+const electronPath = require('electron') as string;
 
 let child: ChildProcess | undefined;
 let timer: NodeJS.Timeout | undefined;
@@ -16,7 +19,7 @@ async function startElectron() {
   const main = resolve(distDir, 'main.mjs');
   const preload = resolve(distDir, 'preload.cjs');
 
-  child = spawn(electron as unknown as string, [main], {
+  child = spawn(electronPath, [main], {
     stdio: 'inherit',
     env: {
       ...process.env,
