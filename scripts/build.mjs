@@ -1,3 +1,4 @@
+import { execFileSync } from 'node:child_process';
 import { build, context } from 'esbuild';
 
 const watch = process.argv.includes('--watch');
@@ -16,6 +17,26 @@ const options = {
   packages: 'external',
   sourcemap: true
 };
+
+function declarations() {
+  execFileSync(
+    process.platform === 'win32' ? 'npx.cmd' : 'npx',
+    [
+      'tsc',
+      '--declaration',
+      '--emitDeclarationOnly',
+      '--declarationMap',
+      'false',
+      '--noEmit',
+      'false',
+      '--outDir',
+      'dist'
+    ],
+    { stdio: 'inherit' }
+  );
+}
+
+declarations();
 
 if (watch) {
   const ctx = await context(options);
