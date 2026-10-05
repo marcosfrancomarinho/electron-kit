@@ -24,10 +24,10 @@ export async function buildProject() {
   await Promise.all([
     build({
       entryPoints: [paths.main],
-      outfile: resolve(distDir, 'main.cjs'),
+      outfile: resolve(distDir, 'main.mjs'),
       bundle: true,
       platform: 'node',
-      format: 'cjs',
+      format: 'esm',
       target: 'node22',
       external: ['electron']
     }),
