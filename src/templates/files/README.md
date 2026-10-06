@@ -1,6 +1,6 @@
-# Electron Kit App
+# Create Kit Electron App
 
-Generated with Electron Kit.
+Generated with Create Kit Electron.
 
 ## Structure
 
