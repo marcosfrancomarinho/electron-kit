@@ -2,12 +2,11 @@ const { rm } = require('node:fs/promises');
 const { resolve } = require('node:path');
 const { spawn } = require('node:child_process');
 
-const repository = resolve(__dirname, '..');
-const cli = resolve(repository, 'dist', 'bundle.cjs');
-const template = process.argv[2] ?? 'vanilla';
-const name = process.argv[3] ?? 'fixture';
+const name = process.argv[2] ?? 'fixture';
 const parent = process.cwd();
 const project = resolve(parent, name);
+const repository = resolve(__dirname, '..');
+const cli = resolve(repository, 'dist', 'bundle.cjs');
 
 async function main() {
   await rm(project, { recursive: true, force: true });
@@ -20,7 +19,6 @@ async function main() {
   let output = '';
   let errorOutput = '';
   let sentName = false;
-  let sentTemplate = false;
 
   child.stdout.on('data', (chunk) => {
     const text = chunk.toString();
@@ -30,15 +28,6 @@ async function main() {
     if (!sentName && output.includes('Enter project name:')) {
       sentName = true;
       child.stdin.write(name + '\n');
-    }
-
-    if (
-      sentName &&
-      !sentTemplate &&
-      output.includes('Select template: [vanilla/react]:')
-    ) {
-      sentTemplate = true;
-      child.stdin.write(template + '\n');
       child.stdin.end();
     }
   });
