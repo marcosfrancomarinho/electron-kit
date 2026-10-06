@@ -1,4 +1,4 @@
-import { browser } from '../electron-kit/runtime/browser.js';
+import { browser } from '../.electron-kit/runtime/browser.js';
 
 async function main() {
   const system = browser.get('system');
