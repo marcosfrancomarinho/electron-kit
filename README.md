@@ -27,9 +27,7 @@ my-app/
 │   ├── index.html
 │   └── style.css
 ├── node/
-│   ├── file.ts
-│   └── system.ts
-├── provider/
+│   ├── functions.ts
 │   └── provider.ts
 ├── main.ts
 ├── global.d.ts
