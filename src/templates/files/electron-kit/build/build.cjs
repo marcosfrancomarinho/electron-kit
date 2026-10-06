@@ -35,7 +35,7 @@ async function buildProject() {
   await Promise.all([
     build({
       absWorkingDir: projectRoot,
-      entryPoints: ['node/main.ts'],
+      entryPoints: ['main.ts'],
       outfile: resolve(dist, 'bundle.cjs'),
       bundle: true,
       platform: 'node',
