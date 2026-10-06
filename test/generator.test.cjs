@@ -79,8 +79,8 @@ function commonFiles(project) {
   return [
     'main.ts',
     'global.d.ts',
-    'browser/index.html',
-    'browser/style.css',
+    'ui/index.html',
+    'ui/style.css',
     'system/functions.ts',
     'system/provider.ts',
     '.electron-kit/build/dev.cjs',
@@ -102,9 +102,9 @@ describe('create-electron-kit', () => {
       assert.equal(existsSync(file), true, file);
     }
 
-    assert.equal(existsSync(join(project, 'browser/main.ts')), true);
-    assert.equal(existsSync(join(project, 'browser/main.tsx')), false);
-    assert.equal(existsSync(join(project, 'browser/App.tsx')), false);
+    assert.equal(existsSync(join(project, 'ui/main.ts')), true);
+    assert.equal(existsSync(join(project, 'ui/main.tsx')), false);
+    assert.equal(existsSync(join(project, 'ui/App.tsx')), false);
     assert.equal(existsSync(join(project, 'node_modules')), false);
     assert.equal(existsSync(join(project, 'dist')), false);
     assert.equal(existsSync(join(project, 'release')), false);
@@ -127,9 +127,9 @@ describe('create-electron-kit', () => {
       assert.equal(existsSync(file), true, file);
     }
 
-    assert.equal(existsSync(join(project, 'browser/main.ts')), false);
-    assert.equal(existsSync(join(project, 'browser/main.tsx')), true);
-    assert.equal(existsSync(join(project, 'browser/App.tsx')), true);
+    assert.equal(existsSync(join(project, 'ui/main.ts')), false);
+    assert.equal(existsSync(join(project, 'ui/main.tsx')), true);
+    assert.equal(existsSync(join(project, 'ui/App.tsx')), true);
     assert.equal(existsSync(join(project, 'node_modules')), false);
 
     const pkg = await packageJson(project);
@@ -140,10 +140,10 @@ describe('create-electron-kit', () => {
     assert.equal(pkg.devDependencies['@types/react-dom'].startsWith('^19'), true);
   });
 
-  it('keeps only browser and system as visible application folders', async () => {
+  it('keeps only ui and system as visible application folders', async () => {
     const { project } = await generate('vanilla');
 
-    assert.equal(existsSync(join(project, 'browser')), true);
+    assert.equal(existsSync(join(project, 'ui')), true);
     assert.equal(existsSync(join(project, 'system')), true);
     assert.equal(existsSync(join(project, 'provider')), false);
     assert.equal(existsSync(join(project, 'src')), false);
