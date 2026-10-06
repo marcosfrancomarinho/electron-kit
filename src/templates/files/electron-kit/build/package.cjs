@@ -5,7 +5,6 @@ const { build: esbuild } = require('esbuild');
 const { build } = require('electron-builder');
 
 const projectRoot = resolve(__dirname, '..', '..');
-const dist = resolve(projectRoot, 'dist');
 const cache = resolve(projectRoot, 'electron-kit', 'cache');
 
 function compilerPath() {
@@ -42,16 +41,14 @@ function checkTypes() {
 async function compile() {
   checkTypes();
 
-  await rm(dist, { recursive: true, force: true });
   await rm(cache, { recursive: true, force: true });
-  await mkdir(dist, { recursive: true });
   await mkdir(cache, { recursive: true });
 
   await Promise.all([
     esbuild({
       absWorkingDir: projectRoot,
       entryPoints: ['main.ts'],
-      outfile: resolve(dist, 'bundle.cjs'),
+      outfile: resolve(cache, 'bundle.cjs'),
       bundle: true,
       platform: 'node',
       format: 'cjs',
@@ -86,15 +83,18 @@ async function packageProject() {
   await build({
     projectDir: projectRoot,
     config: {
+      extraMetadata: {
+        main: 'electron-kit/cache/bundle.cjs',
+      },
       directories: {
         output: 'release',
       },
       files: [
-        'dist/bundle.cjs',
-        'browser/index.html',
-        'browser/style.css',
+        'electron-kit/cache/bundle.cjs',
         'electron-kit/cache/browser.js',
         'electron-kit/cache/preload.cjs',
+        'browser/index.html',
+        'browser/style.css',
         'package.json',
       ],
     },
