@@ -17,7 +17,6 @@
     "main.ts",
     "node/**/*.ts",
     "browser/**/*.ts",
-    "provider/**/*.ts",
     "global.d.ts",
     "electron-kit/**/*.ts"
   ]
