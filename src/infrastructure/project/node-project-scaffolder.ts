@@ -103,11 +103,11 @@ export class NodeProjectScaffolder implements ProjectScaffolder {
         private: true,
         homepage: 'https://github.com/marcosfrancomarinho/electron-kit',
         type: 'module',
-        main: 'electron_kit/cache/bundle.cjs',
+        main: 'kit_electron/cache/bundle.cjs',
         scripts: {
-          dev: 'node electron_kit/build/dev.cjs',
-          package: 'node electron_kit/build/package.cjs',
-          type: 'node electron_kit/build/type.cjs',
+          dev: 'node kit_electron/build/dev.cjs',
+          package: 'node kit_electron/build/package.cjs',
+          type: 'node kit_electron/build/type.cjs',
         },
         dependencies,
         devDependencies: {
