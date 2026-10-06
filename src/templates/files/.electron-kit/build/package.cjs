@@ -144,6 +144,7 @@ async function packageProject() {
       linux: {
         target: ['AppImage', 'deb'],
         category: 'Utility',
+        maintainer: 'Electron Kit',
       },
       mac: {
         target: ['dmg'],
