@@ -1,4 +1,5 @@
 import { cp, mkdir, writeFile } from 'node:fs/promises';
+import { existsSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import type { ProjectScaffolder } from '../../application/ports/project-scaffolder.js';
 import type { Terminal } from '../../application/ports/terminal.js';
@@ -12,15 +13,7 @@ export class NodeProjectScaffolder implements ProjectScaffolder {
   }): Promise<void> {
     await mkdir(input.projectPath);
 
-    const templates = resolve(
-      __dirname,
-      '..',
-      'src',
-      'templates',
-      'files',
-    );
-
-    await cp(templates, input.projectPath, {
+    await cp(this.templates(), input.projectPath, {
       recursive: true,
     });
 
@@ -33,6 +26,21 @@ export class NodeProjectScaffolder implements ProjectScaffolder {
     this.terminal.success('📁 Electron project template created');
     this.terminal.success('📦 package.json created');
     this.terminal.success('🔗 Typed provider bridge prepared');
+  }
+
+  private templates(): string {
+    const candidates = [
+      resolve(__dirname, '..', 'src', 'templates', 'files'),
+      resolve(__dirname, '..', '..', '..', 'src', 'templates', 'files'),
+    ];
+
+    const templatePath = candidates.find(existsSync);
+
+    if (!templatePath) {
+      throw new Error('Electron Kit templates were not found.');
+    }
+
+    return templatePath;
   }
 
   private packageJson(projectName: string): string {
