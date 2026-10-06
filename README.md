@@ -1,6 +1,6 @@
 # Electron Kit
 
-Minimal Electron + TypeScript project generator with a typed Node-to-Browser bridge.
+Minimal Electron + TypeScript project generator with a typed system-to-UI bridge.
 
 Electron Kit keeps its internal tooling inside `.electron-kit/`, leaving the application code small and visible.
 
@@ -43,7 +43,7 @@ npm run dev
 Vanilla:
 
 ```text
-browser/
+ui/
 ├── main.ts
 ├── index.html
 └── style.css
@@ -52,7 +52,7 @@ browser/
 React:
 
 ```text
-browser/
+ui/
 ├── main.tsx
 ├── App.tsx
 ├── index.html
@@ -83,7 +83,7 @@ my-app/
 │   │   ├── browser.ts
 │   │   └── shared.ts
 │   └── cache/
-├── browser/
+├── ui/
 ├── system/
 │   ├── functions.ts
 │   └── provider.ts
@@ -94,7 +94,7 @@ my-app/
 └── README.md
 ```
 
-Because the internal folder starts with a dot, it stays visually separated from `browser/` and `system/`.
+Because the internal folder starts with a dot, it stays visually separated from `ui/` and `system/`.
 
 ## Typed providers
 
@@ -122,7 +122,7 @@ export default providers
   .register('version', functions.version);
 ```
 
-Browser or React:
+UI or React:
 
 ```ts
 const system = browser.get('system');
