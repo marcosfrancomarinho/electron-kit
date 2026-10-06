@@ -1,90 +1,55 @@
 # Electron Kit App
 
-This project was generated with Electron Kit.
+Generated with Electron Kit.
 
 ## Structure
 
 ```text
 electron_kit/
-├── build/
-│   ├── dev.cjs
-│   ├── package.cjs
-│   └── type.cjs
-├── bridge/
-├── runtime/
-└── cache/
-
 src/
 ├── ui/
 └── system/
 main.ts
-global.d.ts
 package.json
 tsconfig.json
 ```
 
-The folder `electron_kit/` contains Electron Kit internals and stays visually separated from the application code.
-
-You normally work in:
+Contexts:
 
 ```text
-src/
-├── ui/
-└── system/
-main.ts
+src/ui/        interface
+src/system/    Node/system providers
+main.ts        Electron window entry
+electron_kit/  internal tooling
 ```
 
-## UI
+## System
 
-Vanilla:
+Add Node functionality in `src/system/functions.ts`.
 
-```text
-src/ui/
-├── main.ts
-├── index.html
-└── style.css
-```
+Register what the UI can use in `src/system/provider.ts`.
 
-React:
-
-```text
-src/src/ui/
-├── main.tsx
-├── App.tsx
-├── index.html
-└── style.css
-```
-
-## System providers
-
-Put System functionality in `src/system/functions.ts`:
+Example:
 
 ```ts
 export const functions = {
-  system: {
-    platform() {
-      return process.platform;
-    },
+  version() {
+    return process.versions.electron;
   },
 };
 ```
 
-Register it in `src/system/provider.ts`:
-
 ```ts
 export default providers
-  .register('system', functions.system);
+  .register('version', functions.version);
 ```
 
-Use it from UI code:
+Use it from the UI:
 
 ```ts
-const system = browser.get('system');
-
-const platform = await system.platform();
+const version = browser.get('version');
+const value = await version();
 ```
-
-Provider names, parameters and return values are inferred by TypeScript.
 
 ## Commands
 
@@ -94,36 +59,7 @@ npm run type
 npm run package
 ```
 
-### Development
-
-```bash
-npm run dev
-```
-
-Generated JavaScript stays in:
-
-```text
-electron_kit/cache/
-├── bundle.cjs
-├── preload.cjs
-└── browser.js
-```
-
-### Type checking
-
-```bash
-npm run type
-```
-
-### Packaging
-
-Current operating system:
-
-```bash
-npm run package
-```
-
-Specific target:
+Specific package target:
 
 ```bash
 npm run package -- win
@@ -131,16 +67,4 @@ npm run package -- linux
 npm run package -- mac
 ```
 
-| Target | Output |
-|---|---|
-| `win` | NSIS / `.exe` |
-| `linux` | AppImage + `.deb` |
-| `mac` | `.dmg` |
-
 Packages are written to `release/`.
-
-## Electron isolation
-
-The generated BrowserWindow uses `contextIsolation: true` and `nodeIntegration: false`.
-
-UI code reaches System functionality only through the typed Electron Kit provider bridge.
