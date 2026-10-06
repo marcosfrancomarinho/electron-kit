@@ -28,7 +28,7 @@ jobs:
           cache: npm
 
       - name: Install
-        run: npm ci
+        run: npm install
 
       - name: TypeScript
         run: npm run type
@@ -66,7 +66,7 @@ jobs:
           cache: npm
 
       - name: Install generator
-        run: npm ci
+        run: npm install
 
       - name: Build generator
         run: npm run build
@@ -109,7 +109,7 @@ jobs:
           cache: npm
 
       - name: Install generator
-        run: npm ci
+        run: npm install
 
       - name: Build generator
         run: npm run build
