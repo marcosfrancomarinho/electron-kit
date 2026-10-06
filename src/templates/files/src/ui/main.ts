@@ -1,4 +1,4 @@
-import { browser } from '../../electron_kit/runtime/browser.js';
+import { browser } from '../../kit_electron/runtime/browser.js';
 
 async function main() {
   const version = browser.get('version');
