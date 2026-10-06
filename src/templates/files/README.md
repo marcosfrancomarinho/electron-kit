@@ -14,8 +14,9 @@ This project was generated with Electron Kit.
 ├── runtime/
 └── cache/
 
-ui/
-system/
+src/
+├── ui/
+└── system/
 main.ts
 global.d.ts
 package.json
@@ -27,8 +28,9 @@ The folder `.electron-kit/` contains Electron Kit internals and stays visually s
 You normally work in:
 
 ```text
-ui/
-system/
+src/
+├── ui/
+└── system/
 main.ts
 ```
 
@@ -37,7 +39,7 @@ main.ts
 Vanilla:
 
 ```text
-ui/
+src/ui/
 ├── main.ts
 ├── index.html
 └── style.css
@@ -46,7 +48,7 @@ ui/
 React:
 
 ```text
-ui/
+src/src/ui/
 ├── main.tsx
 ├── App.tsx
 ├── index.html
@@ -55,7 +57,7 @@ ui/
 
 ## System providers
 
-Put System functionality in `system/functions.ts`:
+Put System functionality in `src/system/functions.ts`:
 
 ```ts
 export const functions = {
@@ -67,7 +69,7 @@ export const functions = {
 };
 ```
 
-Register it in `system/provider.ts`:
+Register it in `src/system/provider.ts`:
 
 ```ts
 export default providers
