@@ -1,7 +1,9 @@
-name: Publish
+name: Publish npm
 
 on:
-  workflow_dispatch:
+  push:
+    tags:
+      - 'v*'
 
 permissions:
   contents: read
@@ -15,23 +17,38 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Node
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 22
-          registry-url: https://registry.npmjs.org
+          node-version: '22'
+          registry-url: 'https://registry.npmjs.org'
 
-      - name: Update npm
+      - name: Ensure supported npm CLI
         run: npm install --global npm@latest
 
-      - name: Install
-        run: npm ci
+      - name: Install dependencies
+        run: npm install
 
-      - name: TypeScript
+      - name: Verify tag matches package version
+        shell: bash
+        run: |
+          PACKAGE_VERSION="$(node -p "require('./package.json').version")"
+          if [ "v$PACKAGE_VERSION" != "$GITHUB_REF_NAME" ]; then
+            echo "Tag $GITHUB_REF_NAME does not match package version v$PACKAGE_VERSION"
+            exit 1
+          fi
+
+      - name: Check types
         run: npm run type
 
-      - name: Tests
+      - name: Test
         run: npm test
 
+      - name: Build
+        run: npm run build
+
+      - name: Check package
+        run: npm pack --dry-run
+
       - name: Publish
-        run: npm publish --access public
+        run: npm publish --access public --provenance
