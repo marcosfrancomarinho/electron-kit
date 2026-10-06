@@ -32,7 +32,7 @@ async function startElectron() {
 
   child = spawn(
     electron,
-    [resolve(dist, 'main.cjs')],
+    [resolve(dist, 'bundle.cjs')],
     {
       cwd: projectRoot,
       stdio: 'inherit',
@@ -72,7 +72,11 @@ async function main() {
   await rebuild();
 
   const watchers = [
-    watch(resolve(projectRoot, 'src'), { recursive: true }, schedule),
+    watch(resolve(projectRoot, 'node'), { recursive: true }, schedule),
+    watch(resolve(projectRoot, 'browser'), { recursive: true }, schedule),
+    watch(resolve(projectRoot, 'provider.ts'), schedule),
+    watch(resolve(projectRoot, 'index.html'), schedule),
+    watch(resolve(projectRoot, 'style.css'), schedule),
     watch(resolve(projectRoot, 'electron-kit', 'runtime'), { recursive: true }, schedule),
     watch(resolve(projectRoot, 'electron-kit', 'bridge'), { recursive: true }, schedule),
   ];
