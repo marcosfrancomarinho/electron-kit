@@ -1,13 +1,90 @@
-const { spawn } = require('node:child_process');
+const { spawn, spawnSync } = require('node:child_process');
+const { mkdir, rm } = require('node:fs/promises');
 const { watch } = require('node:fs');
-const { resolve } = require('node:path');
+const { dirname, resolve } = require('node:path');
+const { build } = require('esbuild');
 const electron = require('electron');
-const { buildProject, dist, projectRoot } = require('./build.cjs');
+
+const projectRoot = resolve(__dirname, '..', '..');
+const dist = resolve(projectRoot, 'dist');
+const cache = resolve(projectRoot, 'electron-kit', 'cache');
 
 let child;
 let timer;
 let rebuilding = false;
 let pending = false;
+
+function compilerPath() {
+  const packagePath = require.resolve('typescript/package.json', {
+    paths: [projectRoot],
+  });
+  const { bin } = require(packagePath);
+  const compiler = typeof bin === 'string' ? bin : bin?.tsc;
+
+  if (!compiler) {
+    throw new Error('The installed TypeScript package does not provide tsc.');
+  }
+
+  return resolve(dirname(packagePath), compiler);
+}
+
+function checkTypes() {
+  const result = spawnSync(
+    process.execPath,
+    [compilerPath(), '--noEmit'],
+    {
+      cwd: projectRoot,
+      stdio: 'inherit',
+    },
+  );
+
+  if (result.error) throw result.error;
+
+  if (result.status !== 0) {
+    throw new Error('TypeScript errors found.');
+  }
+}
+
+async function compile() {
+  checkTypes();
+
+  await rm(dist, { recursive: true, force: true });
+  await rm(cache, { recursive: true, force: true });
+  await mkdir(dist, { recursive: true });
+  await mkdir(cache, { recursive: true });
+
+  await Promise.all([
+    build({
+      absWorkingDir: projectRoot,
+      entryPoints: ['main.ts'],
+      outfile: resolve(dist, 'bundle.cjs'),
+      bundle: true,
+      platform: 'node',
+      format: 'cjs',
+      target: 'node22',
+      external: ['electron'],
+    }),
+    build({
+      absWorkingDir: projectRoot,
+      entryPoints: ['electron-kit/bridge/preload.ts'],
+      outfile: resolve(cache, 'preload.cjs'),
+      bundle: true,
+      platform: 'node',
+      format: 'cjs',
+      target: 'node22',
+      external: ['electron'],
+    }),
+    build({
+      absWorkingDir: projectRoot,
+      entryPoints: ['browser/main.ts'],
+      outfile: resolve(cache, 'browser.js'),
+      bundle: true,
+      platform: 'browser',
+      format: 'iife',
+      target: 'es2022',
+    }),
+  ]);
+}
 
 async function stopElectron() {
   const processToStop = child;
@@ -49,7 +126,7 @@ async function rebuild() {
   rebuilding = true;
 
   try {
-    await buildProject();
+    await compile();
     await startElectron();
   } catch (error) {
     console.error(error && error.message ? error.message : error);
@@ -73,10 +150,8 @@ async function main() {
 
   const watchers = [
     watch(resolve(projectRoot, 'node'), { recursive: true }, schedule),
-    watch(resolve(projectRoot, 'main.ts'), schedule),
     watch(resolve(projectRoot, 'browser'), { recursive: true }, schedule),
-    watch(resolve(projectRoot, 'browser', 'index.html'), schedule),
-    watch(resolve(projectRoot, 'browser', 'style.css'), schedule),
+    watch(resolve(projectRoot, 'main.ts'), schedule),
     watch(resolve(projectRoot, 'electron-kit', 'runtime'), { recursive: true }, schedule),
     watch(resolve(projectRoot, 'electron-kit', 'bridge'), { recursive: true }, schedule),
   ];
