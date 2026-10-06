@@ -7,8 +7,6 @@ Generated with Electron Kit.
 ```text
 browser/
 node/
-provider/
-  provider.ts
 main.ts
 browser/index.html
 browser/style.css
@@ -51,7 +49,7 @@ dist/
 
 ## Providers
 
-Register Node functionality in `provider/provider.ts`:
+Register Node functionality in `node/provider.ts`:
 
 ```ts
 export default providers
