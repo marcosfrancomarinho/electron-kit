@@ -2,11 +2,9 @@
 
 Minimal Electron + TypeScript project generator with a typed Node-to-Browser bridge.
 
-Electron Kit keeps the Electron plumbing inside `. .electron-kit/` and leaves the application code small and visible.
+Electron Kit keeps its internal tooling inside `.electron-kit/`, leaving the application code small and visible.
 
 ## Create a project
-
-With npm:
 
 ```bash
 npx create-electron-kit
@@ -27,11 +25,9 @@ Enter project name: my-app
 Template [vanilla/react]:
 ```
 
-Press Enter on the template prompt to use `vanilla`.
+Press Enter to use `vanilla`.
 
-Electron Kit does **not** install dependencies automatically.
-
-After generation:
+Dependencies are not installed automatically.
 
 ```bash
 cd my-app
@@ -41,7 +37,7 @@ npm run dev
 
 ## Templates
 
-### Vanilla
+Vanilla:
 
 ```text
 browser/
@@ -50,7 +46,7 @@ browser/
 └── style.css
 ```
 
-### React
+React:
 
 ```text
 browser/
@@ -60,9 +56,7 @@ browser/
 └── style.css
 ```
 
-The React template adds React 19, React DOM and their TypeScript types.
-
-The Node side is the same for both templates:
+The Node side is the same for both:
 
 ```text
 node/
@@ -74,11 +68,7 @@ node/
 
 ```text
 my-app/
-├── browser/
-├── node/
-│   ├── functions.ts
-│   └── provider.ts
-├──  .electron-kit/
+├── .electron-kit/
 │   ├── build/
 │   │   ├── dev.cjs
 │   │   ├── package.cjs
@@ -90,6 +80,10 @@ my-app/
 │   │   ├── browser.ts
 │   │   └── shared.ts
 │   └── cache/
+├── browser/
+├── node/
+│   ├── functions.ts
+│   └── provider.ts
 ├── main.ts
 ├── global.d.ts
 ├── package.json
@@ -97,28 +91,14 @@ my-app/
 └── README.md
 ```
 
-The folders you normally work in are:
-
-```text
-browser/
-node/
-main.ts
-```
-
-Internal Electron IPC, preload, generated JavaScript and build tooling stay inside `. .electron-kit/`.
+Because the internal folder starts with a dot, it stays visually separated from `browser/` and `node/`.
 
 ## Typed providers
 
-Node functionality can be kept in `node/functions.ts`:
+`node/functions.ts`:
 
 ```ts
 export const functions = {
-  file: {
-    read(path: string) {
-      return readFile(path, 'utf8');
-    },
-  },
-
   system: {
     platform() {
       return process.platform;
@@ -131,16 +111,15 @@ export const functions = {
 };
 ```
 
-Register it in `node/provider.ts`:
+`node/provider.ts`:
 
 ```ts
 export default providers
-  .register('file', functions.file)
   .register('system', functions.system)
   .register('version', functions.version);
 ```
 
-Use it from Vanilla or React:
+Browser or React:
 
 ```ts
 const system = browser.get('system');
@@ -148,13 +127,11 @@ const system = browser.get('system');
 const platform = await system.platform();
 ```
 
-Provider names, method parameters and return values are inferred directly from the registry.
-
-There is no separate interface file to keep synchronized.
+The provider registry is the type source, so no duplicated contract file is required.
 
 ## Commands
 
-Generated projects intentionally expose only three commands:
+Generated projects expose only:
 
 ```bash
 npm run dev
@@ -162,50 +139,35 @@ npm run type
 npm run package
 ```
 
-### Development
+### Dev
 
 ```bash
 npm run dev
 ```
 
-Electron Kit compiles the application and runs Electron.
-
-Generated JavaScript stays under:
+Generated JavaScript stays in:
 
 ```text
- .electron-kit/cache/
+.electron-kit/cache/
 ├── bundle.cjs
 ├── preload.cjs
 └── browser.js
 ```
 
-No `dist/` folder is created by the development command.
-
-### Type checking
+### Type
 
 ```bash
 npm run type
 ```
 
-Runs TypeScript checking without emitting JavaScript.
-
-### Packaging
-
-Package for the current operating system:
+### Package
 
 ```bash
 npm run package
-```
-
-Or choose the target explicitly:
-
-```bash
 npm run package -- win
 npm run package -- linux
 npm run package -- mac
 ```
-
-Targets:
 
 | Target | Output |
 |---|---|
@@ -213,55 +175,27 @@ Targets:
 | `linux` | AppImage + `.deb` |
 | `mac` | `.dmg` |
 
-Final packages are written to:
+Final packages are written to `release/`.
 
-```text
-release/
-```
+## Security
 
-For reliable release builds, package each target on its native operating system, especially macOS.
-
-## Package managers
-
-The generator detects npm, Yarn and pnpm.
-
-Typical commands are:
-
-```bash
-# npm
-npm install
-npm run dev
-
-# Yarn
-yarn
-yarn dev
-
-# pnpm
-pnpm install
-pnpm dev
-```
-
-## Security model
-
-Generated Browser windows use:
+Generated windows use:
 
 ```text
 contextIsolation: true
 nodeIntegration: false
 ```
 
-Browser code does not receive direct Node.js access.
-
-Node functionality is exposed through the typed provider bridge and Electron preload layer.
+Node access is exposed only through the preload/provider bridge.
 
 ## Philosophy
 
 - TypeScript first
 - Vanilla or React
-- minimal visible application structure
+- minimal visible structure
 - no automatic dependency installation
 - typed `providers.register()`
 - typed `browser.get()`
 - no duplicated provider contracts
-- Electron plumbing hidden under `. .electron-kit/`
-- only `dev`, `type` and `package` as public project commands
+- hidden internal tooling under `.electron-kit/`
+- only `dev`, `type` and `package` as public commands
