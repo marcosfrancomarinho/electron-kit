@@ -1,7 +1,7 @@
 {
   "name": "create-kit-electron",
   "version": "0.1.0",
-  "description": "Create a minimal, type-safe Electron + TypeScript project.",
+  "description": "Create a minimal, type-safe Electron + React + TypeScript project.",
   "type": "module",
   "main": "dist/bundle.cjs",
   "source": "src/main.ts",
@@ -58,7 +58,6 @@
     "boilerplate",
     "template",
     "react",
-    "vanilla",
     "esbuild",
     "type-safe",
     "typed",
