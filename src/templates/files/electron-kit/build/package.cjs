@@ -11,7 +11,11 @@ async function packageProject() {
         output: 'release',
       },
       files: [
-        '.electron-kit/dist/**/*',
+        'dist/bundle.cjs',
+        'index.html',
+        'style.css',
+        'electron-kit/cache/browser.js',
+        'electron-kit/cache/preload.cjs',
         'package.json',
       ],
     },
