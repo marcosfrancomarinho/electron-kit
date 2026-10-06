@@ -1,5 +1,5 @@
 node_modules/
 release/
-_electron_kit/cache/
+electron_kit/cache/
 *.log
 .DS_Store
