@@ -1,70 +1,163 @@
 # Electron Kit App
 
-Generated with Electron Kit.
+This project was generated with Electron Kit.
 
-## Structure
+## Application structure
 
 ```text
 browser/
 node/
 main.ts
-browser/index.html
-browser/style.css
 global.d.ts
 electron-kit/
 package.json
 tsconfig.json
 ```
 
-Your application code stays visible at the project root.
+Your application code normally stays in:
 
-Electron Kit internals stay inside `electron-kit/`, including:
+```text
+browser/
+node/
+main.ts
+```
+
+Electron Kit internals stay inside:
 
 ```text
 electron-kit/
 ├── build/
+│   ├── dev.cjs
+│   ├── package.cjs
+│   └── type.cjs
 ├── bridge/
 ├── runtime/
 └── cache/
 ```
 
-The cache folder contains generated preload and Browser bundles.
+## Browser
 
-## Commands
-
-```bash
-npm run dev
-npm run build
-npm start
-npm run package
-npm run type
-```
-
-`npm run build` generates only the production main bundle in the root `dist` folder:
+Vanilla projects use:
 
 ```text
-dist/
-└── bundle.cjs
+browser/
+├── main.ts
+├── index.html
+└── style.css
 ```
 
-## Providers
+React projects use:
 
-Register Node functionality in `node/provider.ts`:
+```text
+browser/
+├── main.tsx
+├── App.tsx
+├── index.html
+└── style.css
+```
+
+## Node providers
+
+Node functionality lives in `node/functions.ts`.
+
+Example:
+
+```ts
+export const functions = {
+  system: {
+    platform() {
+      return process.platform;
+    },
+  },
+};
+```
+
+Register it in `node/provider.ts`:
 
 ```ts
 export default providers
-  .register('file', file)
-  .register('system', system);
+  .register('system', functions.system);
 ```
 
-Use it from Browser code:
+Then use it from Browser code:
 
 ```ts
-const file = browser.get('file');
+const system = browser.get('system');
 
-await file.read('config.json');
+const platform = await system.platform();
 ```
 
-Provider names, parameters and return values are inferred by TypeScript.
+The provider token, method parameters and return types are inferred by TypeScript.
 
-`global.d.ts` declares CSS modules for TypeScript.
+## Commands
+
+Only three public commands are generated:
+
+```bash
+npm run dev
+npm run type
+npm run package
+```
+
+### Dev
+
+```bash
+npm run dev
+```
+
+Runs the Electron application in development.
+
+Generated JavaScript stays in:
+
+```text
+electron-kit/cache/
+├── bundle.cjs
+├── preload.cjs
+└── browser.js
+```
+
+### Type
+
+```bash
+npm run type
+```
+
+Checks TypeScript without emitting files.
+
+### Package
+
+Current operating system:
+
+```bash
+npm run package
+```
+
+Specific target:
+
+```bash
+npm run package -- win
+npm run package -- linux
+npm run package -- mac
+```
+
+Outputs:
+
+| Target | Format |
+|---|---|
+| `win` | NSIS / `.exe` |
+| `linux` | AppImage + `.deb` |
+| `mac` | `.dmg` |
+
+Packaged applications are generated under:
+
+```text
+release/
+```
+
+For release builds, prefer packaging on the target operating system.
+
+## Electron isolation
+
+The generated window uses context isolation and keeps Node integration disabled.
+
+Browser code accesses Node functionality only through the Electron Kit provider bridge.
