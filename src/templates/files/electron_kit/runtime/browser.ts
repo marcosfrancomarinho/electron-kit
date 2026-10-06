@@ -4,7 +4,7 @@ import type { Remote } from './shared.js';
 
 type RegisteredProviders = ProviderRegistry<typeof registry>;
 
-interface ElectronKitBridge {
+interface CreateKitElectronBridge {
   invoke(
     token: string,
     method: string | null,
@@ -14,16 +14,16 @@ interface ElectronKitBridge {
 
 declare global {
   interface Window {
-    __electronKit?: ElectronKitBridge;
+    __createKitElectron?: CreateKitElectronBridge;
   }
 }
 
-function bridge(): ElectronKitBridge {
-  if (!window.__electronKit) {
-    throw new Error('Electron Kit bridge is unavailable.');
+function bridge(): CreateKitElectronBridge {
+  if (!window.__createKitElectron) {
+    throw new Error('Create Kit Electron bridge is unavailable.');
   }
 
-  return window.__electronKit;
+  return window.__createKitElectron;
 }
 
 function objectProxy(token: string): object {
