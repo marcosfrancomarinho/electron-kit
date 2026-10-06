@@ -5,7 +5,7 @@ This project was generated with Electron Kit.
 ## Structure
 
 ```text
-_electron_kit/
+electron_kit/
 ├── build/
 │   ├── dev.cjs
 │   ├── package.cjs
@@ -23,7 +23,7 @@ package.json
 tsconfig.json
 ```
 
-The folder `_electron_kit/` contains Electron Kit internals and stays visually separated from the application code.
+The folder `electron_kit/` contains Electron Kit internals and stays visually separated from the application code.
 
 You normally work in:
 
@@ -103,7 +103,7 @@ npm run dev
 Generated JavaScript stays in:
 
 ```text
-_electron_kit/cache/
+electron_kit/cache/
 ├── bundle.cjs
 ├── preload.cjs
 └── browser.js
