@@ -43,7 +43,7 @@ npm run dev
 Vanilla:
 
 ```text
-ui/
+src/ui/
 ├── main.ts
 ├── index.html
 └── style.css
@@ -52,7 +52,7 @@ ui/
 React:
 
 ```text
-ui/
+src/src/ui/
 ├── main.tsx
 ├── App.tsx
 ├── index.html
@@ -62,7 +62,7 @@ ui/
 The system side is the same for both:
 
 ```text
-system/
+src/system/
 ├── functions.ts
 └── provider.ts
 ```
@@ -83,8 +83,9 @@ my-app/
 │   │   ├── browser.ts
 │   │   └── shared.ts
 │   └── cache/
-├── ui/
-├── system/
+├── src/
+│   ├── ui/
+│   └── system/
 │   ├── functions.ts
 │   └── provider.ts
 ├── main.ts
@@ -94,11 +95,11 @@ my-app/
 └── README.md
 ```
 
-Because the internal folder starts with a dot, it stays visually separated from `ui/` and `system/`.
+Because the internal folder starts with a dot, it stays visually separated from `src/ui/` and `src/system/`.
 
 ## Typed providers
 
-`system/functions.ts`:
+`src/system/functions.ts`:
 
 ```ts
 export const functions = {
@@ -114,7 +115,7 @@ export const functions = {
 };
 ```
 
-`system/provider.ts`:
+`src/system/provider.ts`:
 
 ```ts
 export default providers
