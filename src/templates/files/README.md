@@ -5,7 +5,7 @@ Generated with Create Kit Electron.
 ## Structure
 
 ```text
-electron_kit/
+kit_electron/
 src/
 ├── ui/
 └── system/
@@ -20,7 +20,7 @@ Contexts:
 src/ui/        interface
 src/system/    Node/system providers
 main.ts        Electron window entry
-electron_kit/  internal tooling
+kit_electron/  internal tooling
 ```
 
 ## System
