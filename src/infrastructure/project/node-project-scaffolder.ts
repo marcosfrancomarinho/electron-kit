@@ -53,7 +53,6 @@ export class NodeProjectScaffolder implements ProjectScaffolder {
         main: 'dist/bundle.cjs',
         scripts: {
           dev: 'node electron-kit/build/dev.cjs',
-          start: 'electron dist/bundle.cjs',
           package: 'node electron-kit/build/package.cjs',
           type: 'node electron-kit/build/type.cjs',
         },
