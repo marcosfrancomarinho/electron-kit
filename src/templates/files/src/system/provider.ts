@@ -1,4 +1,4 @@
-import { providers } from '../../.electron-kit/runtime/node.js';
+import { providers } from '../../_electron_kit/runtime/node.js';
 import { functions } from './functions.js';
 
 export default providers
