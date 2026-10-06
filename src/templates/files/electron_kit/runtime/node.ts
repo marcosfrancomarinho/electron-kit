@@ -2,7 +2,7 @@ import { ipcMain } from 'electron';
 import { join } from 'node:path';
 import type { ProviderMap, ProviderValue } from './shared.js';
 
-const channel = 'electron-kit:invoke';
+const channel = 'create-kit-electron:invoke';
 const registry = new Map<string, ProviderValue>();
 let listening = false;
 
