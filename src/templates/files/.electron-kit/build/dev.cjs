@@ -7,9 +7,9 @@ const electron = require('electron');
 
 const projectRoot = resolve(__dirname, '..', '..');
 const cache = resolve(projectRoot, '.electron-kit', 'cache');
-const browserEntry = existsSync(resolve(projectRoot, 'browser', 'main.tsx'))
-  ? 'browser/main.tsx'
-  : 'browser/main.ts';
+const uiEntry = existsSync(resolve(projectRoot, 'ui', 'main.tsx'))
+  ? 'ui/main.tsx'
+  : 'ui/main.ts';
 
 let child;
 let timer;
@@ -76,7 +76,7 @@ async function compile() {
     }),
     build({
       absWorkingDir: projectRoot,
-      entryPoints: [browserEntry],
+      entryPoints: [uiEntry],
       outfile: resolve(cache, 'browser.js'),
       bundle: true,
       platform: 'browser',
@@ -150,7 +150,7 @@ async function main() {
 
   const watchers = [
     watch(resolve(projectRoot, 'system'), { recursive: true }, schedule),
-    watch(resolve(projectRoot, 'browser'), { recursive: true }, schedule),
+    watch(resolve(projectRoot, 'ui'), { recursive: true }, schedule),
     watch(resolve(projectRoot, 'main.ts'), schedule),
     watch(resolve(projectRoot, '.electron-kit', 'runtime'), { recursive: true }, schedule),
     watch(resolve(projectRoot, '.electron-kit', 'bridge'), { recursive: true }, schedule),
