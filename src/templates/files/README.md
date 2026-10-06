@@ -7,21 +7,30 @@ Generated with Electron Kit.
 ```text
 browser/
 node/
-provider.ts
+provider/
+  provider.ts
+main.ts
 index.html
 style.css
+global.d.ts
 electron-kit/
 package.json
 tsconfig.json
 ```
 
-The public application code stays at the project root. Internal bridge, build scripts, runtime helpers and cache stay inside `electron-kit/`.
+Your application code stays visible at the project root.
 
-## Install
+Electron Kit internals stay inside `electron-kit/`, including:
 
-```bash
-npm install
+```text
+electron-kit/
+├── build/
+├── bridge/
+├── runtime/
+└── cache/
 ```
+
+The cache folder contains generated preload and Browser bundles.
 
 ## Commands
 
@@ -33,18 +42,16 @@ npm run package
 npm run type
 ```
 
-`npm run build` generates:
+`npm run build` generates only the production main bundle in the root `dist` folder:
 
 ```text
 dist/
 └── bundle.cjs
 ```
 
-Electron Kit keeps generated preload and Browser bundles under `electron-kit/cache/`.
-
 ## Providers
 
-Register Node functionality in `provider.ts`:
+Register Node functionality in `provider/provider.ts`:
 
 ```ts
 export default providers
@@ -60,4 +67,6 @@ const file = browser.get('file');
 await file.read('config.json');
 ```
 
-The Browser API is inferred from the registered providers.
+Provider names, parameters and return values are inferred by TypeScript.
+
+`global.d.ts` declares CSS modules for TypeScript.
