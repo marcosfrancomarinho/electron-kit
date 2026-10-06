@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { browser } from '../.electron-kit/runtime/browser.js';
+import { browser } from '../../.electron-kit/runtime/browser.js';
 
 export function App() {
   const [version, setVersion] = useState('');
