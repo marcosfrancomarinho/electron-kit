@@ -1,10 +1,11 @@
 const { spawnSync } = require('node:child_process');
-const { cp, mkdir, rm } = require('node:fs/promises');
+const { mkdir, rm } = require('node:fs/promises');
 const { resolve } = require('node:path');
 const { build } = require('esbuild');
 
 const projectRoot = resolve(__dirname, '..', '..');
-const dist = resolve(projectRoot, '.electron-kit', 'dist');
+const dist = resolve(projectRoot, 'dist');
+const cache = resolve(projectRoot, 'electron-kit', 'cache');
 
 function checkTypes() {
   const result = spawnSync(
@@ -27,13 +28,15 @@ async function buildProject() {
   checkTypes();
 
   await rm(dist, { recursive: true, force: true });
+  await rm(cache, { recursive: true, force: true });
   await mkdir(dist, { recursive: true });
+  await mkdir(cache, { recursive: true });
 
   await Promise.all([
     build({
       absWorkingDir: projectRoot,
-      entryPoints: ['src/node/main.ts'],
-      outfile: resolve(dist, 'main.cjs'),
+      entryPoints: ['node/main.ts'],
+      outfile: resolve(dist, 'bundle.cjs'),
       bundle: true,
       platform: 'node',
       format: 'cjs',
@@ -44,7 +47,7 @@ async function buildProject() {
     build({
       absWorkingDir: projectRoot,
       entryPoints: ['electron-kit/bridge/preload.ts'],
-      outfile: resolve(dist, 'preload.cjs'),
+      outfile: resolve(cache, 'preload.cjs'),
       bundle: true,
       platform: 'node',
       format: 'cjs',
@@ -54,8 +57,8 @@ async function buildProject() {
     }),
     build({
       absWorkingDir: projectRoot,
-      entryPoints: ['src/browser/main.ts'],
-      outfile: resolve(dist, 'browser.js'),
+      entryPoints: ['browser/main.ts'],
+      outfile: resolve(cache, 'browser.js'),
       bundle: true,
       platform: 'browser',
       format: 'iife',
@@ -64,12 +67,7 @@ async function buildProject() {
     }),
   ]);
 
-  await cp(
-    resolve(projectRoot, 'src', 'browser', 'index.html'),
-    resolve(dist, 'index.html'),
-  );
-
-  console.log('✅ Electron build completed');
+  console.log('✅ dist/bundle.cjs generated');
 }
 
 if (require.main === module) {
@@ -80,4 +78,9 @@ if (require.main === module) {
   });
 }
 
-module.exports = { buildProject, dist, projectRoot };
+module.exports = {
+  buildProject,
+  cache,
+  dist,
+  projectRoot,
+};
