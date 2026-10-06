@@ -16,9 +16,9 @@ after(async () => {
   );
 });
 
-async function generate(template) {
+async function generate() {
   const parent = await mkdtemp(join(tmpdir(), 'create-kit-electron-'));
-  const name = 'app-' + template;
+  const name = 'app-react';
   const project = join(parent, name);
   fixtures.push(parent);
 
@@ -30,7 +30,6 @@ async function generate(template) {
   let output = '';
   let errorOutput = '';
   let sentName = false;
-  let sentTemplate = false;
 
   child.stdout.on('data', (chunk) => {
     output += chunk.toString();
@@ -38,15 +37,6 @@ async function generate(template) {
     if (!sentName && output.includes('Enter project name:')) {
       sentName = true;
       child.stdin.write(name + '\n');
-    }
-
-    if (
-      sentName &&
-      !sentTemplate &&
-      output.includes('Select template: [vanilla/react]:')
-    ) {
-      sentTemplate = true;
-      child.stdin.write(template + '\n');
       child.stdin.end();
     }
   });
@@ -81,6 +71,8 @@ function commonFiles(project) {
     'global.d.ts',
     'src/ui/index.html',
     'src/ui/style.css',
+    'src/ui/main.tsx',
+    'src/ui/App.tsx',
     'src/system/functions.ts',
     'src/system/provider.ts',
     'kit_electron/build/dev.cjs',
@@ -95,16 +87,14 @@ function commonFiles(project) {
 }
 
 describe('create-kit-electron', () => {
-  it('creates the minimal Vanilla template without installing dependencies', async () => {
-    const { project } = await generate('vanilla');
+  it('creates a React project without installing dependencies', async () => {
+    const { project } = await generate();
 
     for (const file of commonFiles(project)) {
       assert.equal(existsSync(file), true, file);
     }
 
-    assert.equal(existsSync(join(project, 'src/ui/main.ts')), true);
-    assert.equal(existsSync(join(project, 'src/ui/main.tsx')), false);
-    assert.equal(existsSync(join(project, 'src/ui/App.tsx')), false);
+    assert.equal(existsSync(join(project, 'src/ui/main.ts')), false);
     assert.equal(existsSync(join(project, 'node_modules')), false);
     assert.equal(existsSync(join(project, 'dist')), false);
     assert.equal(existsSync(join(project, 'release')), false);
@@ -116,32 +106,15 @@ describe('create-kit-electron', () => {
       'package',
       'type',
     ]);
-    assert.deepEqual(pkg.dependencies, {});
-    assert.equal(pkg.main, 'kit_electron/cache/bundle.cjs');
-  });
-
-  it('creates the React template with TSX and React dependencies', async () => {
-    const { project } = await generate('react');
-
-    for (const file of commonFiles(project)) {
-      assert.equal(existsSync(file), true, file);
-    }
-
-    assert.equal(existsSync(join(project, 'src/ui/main.ts')), false);
-    assert.equal(existsSync(join(project, 'src/ui/main.tsx')), true);
-    assert.equal(existsSync(join(project, 'src/ui/App.tsx')), true);
-    assert.equal(existsSync(join(project, 'node_modules')), false);
-
-    const pkg = await packageJson(project);
-
     assert.equal(pkg.dependencies.react.startsWith('^19'), true);
     assert.equal(pkg.dependencies['react-dom'].startsWith('^19'), true);
     assert.equal(pkg.devDependencies['@types/react'].startsWith('^19'), true);
     assert.equal(pkg.devDependencies['@types/react-dom'].startsWith('^19'), true);
+    assert.equal(pkg.main, 'kit_electron/cache/bundle.cjs');
   });
 
   it('keeps application code under src', async () => {
-    const { project } = await generate('vanilla');
+    const { project } = await generate();
 
     assert.equal(existsSync(join(project, 'src')), true);
     assert.equal(existsSync(join(project, 'src/ui')), true);
