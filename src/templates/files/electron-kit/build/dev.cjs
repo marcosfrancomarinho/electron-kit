@@ -73,8 +73,9 @@ async function main() {
 
   const watchers = [
     watch(resolve(projectRoot, 'node'), { recursive: true }, schedule),
+    watch(resolve(projectRoot, 'main.ts'), schedule),
     watch(resolve(projectRoot, 'browser'), { recursive: true }, schedule),
-    watch(resolve(projectRoot, 'provider.ts'), schedule),
+    watch(resolve(projectRoot, 'provider'), { recursive: true }, schedule),
     watch(resolve(projectRoot, 'index.html'), schedule),
     watch(resolve(projectRoot, 'style.css'), schedule),
     watch(resolve(projectRoot, 'electron-kit', 'runtime'), { recursive: true }, schedule),
