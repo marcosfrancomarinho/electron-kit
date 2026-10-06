@@ -15,7 +15,7 @@ This project was generated with Electron Kit.
 └── cache/
 
 browser/
-node/
+system/
 main.ts
 global.d.ts
 package.json
@@ -28,7 +28,7 @@ You normally work in:
 
 ```text
 browser/
-node/
+system/
 main.ts
 ```
 
@@ -53,9 +53,9 @@ browser/
 └── style.css
 ```
 
-## Node providers
+## System providers
 
-Put Node functionality in `node/functions.ts`:
+Put System functionality in `system/functions.ts`:
 
 ```ts
 export const functions = {
@@ -67,7 +67,7 @@ export const functions = {
 };
 ```
 
-Register it in `node/provider.ts`:
+Register it in `system/provider.ts`:
 
 ```ts
 export default providers
@@ -141,4 +141,4 @@ Packages are written to `release/`.
 
 The generated BrowserWindow uses `contextIsolation: true` and `nodeIntegration: false`.
 
-Browser code reaches Node functionality only through the typed Electron Kit provider bridge.
+Browser code reaches System functionality only through the typed Electron Kit provider bridge.
