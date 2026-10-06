@@ -142,7 +142,7 @@ export class TerminalAdapter implements Terminal {
       '\n' +
         this.palette.paint(
           this.palette.green,
-          `✅ Electron project "${projectName}" created!`,
+          `✅ Create Kit Electron project "${projectName}" created!`,
         ) +
         '\n\n📦 Dependencies were not installed automatically.' +
         '\n\n📂 Next steps:\n  ' +
