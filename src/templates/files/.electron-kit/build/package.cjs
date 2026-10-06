@@ -8,11 +8,11 @@ const { build, Platform } = require('electron-builder');
 const projectRoot = resolve(__dirname, '..', '..');
 const cache = resolve(projectRoot, '.electron-kit', 'cache');
 
-const browserEntry = existsSync(
-  resolve(projectRoot, 'browser', 'main.tsx'),
+const uiEntry = existsSync(
+  resolve(projectRoot, 'ui', 'main.tsx'),
 )
-  ? 'browser/main.tsx'
-  : 'browser/main.ts';
+  ? 'ui/main.tsx'
+  : 'ui/main.ts';
 
 function compilerPath() {
   const packagePath = require.resolve('typescript/package.json', {
@@ -76,7 +76,7 @@ async function compile() {
     }),
     esbuild({
       absWorkingDir: projectRoot,
-      entryPoints: [browserEntry],
+      entryPoints: [uiEntry],
       outfile: resolve(cache, 'browser.js'),
       bundle: true,
       platform: 'browser',
@@ -134,8 +134,8 @@ async function packageProject() {
         '.electron-kit/cache/bundle.cjs',
         '.electron-kit/cache/browser.js',
         '.electron-kit/cache/preload.cjs',
-        'browser/index.html',
-        'browser/style.css',
+        'ui/index.html',
+        'ui/style.css',
         'package.json',
       ],
       win: {
