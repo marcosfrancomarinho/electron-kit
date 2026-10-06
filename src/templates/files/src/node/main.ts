@@ -17,17 +17,18 @@ async function createWindow() {
   await window.loadFile(join(__dirname, 'index.html'));
 }
 
-await app.whenReady();
-await createWindow();
+app.whenReady().then(async () => {
+  await createWindow();
+
+  app.on('activate', async () => {
+    if (BrowserWindow.getAllWindows().length === 0) {
+      await createWindow();
+    }
+  });
+});
 
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
     app.quit();
-  }
-});
-
-app.on('activate', async () => {
-  if (BrowserWindow.getAllWindows().length === 0) {
-    await createWindow();
   }
 });
