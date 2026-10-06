@@ -1,7 +1,7 @@
 import { app, BrowserWindow } from 'electron';
 import { join } from 'node:path';
 import { preloadPath } from './.electron-kit/runtime/node.js';
-import './system/provider.js';
+import './src/system/provider.js';
 
 async function createWindow() {
   const window = new BrowserWindow({
@@ -15,7 +15,7 @@ async function createWindow() {
   });
 
   await window.loadFile(
-    join(__dirname, '..', '..', 'ui', 'index.html'),
+    join(__dirname, '..', '..', 'src', 'ui', 'index.html'),
   );
 }
 
