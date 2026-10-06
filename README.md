@@ -56,10 +56,10 @@ browser/
 └── style.css
 ```
 
-The Node side is the same for both:
+The system side is the same for both:
 
 ```text
-node/
+system/
 ├── functions.ts
 └── provider.ts
 ```
@@ -81,7 +81,7 @@ my-app/
 │   │   └── shared.ts
 │   └── cache/
 ├── browser/
-├── node/
+├── system/
 │   ├── functions.ts
 │   └── provider.ts
 ├── main.ts
@@ -91,11 +91,11 @@ my-app/
 └── README.md
 ```
 
-Because the internal folder starts with a dot, it stays visually separated from `browser/` and `node/`.
+Because the internal folder starts with a dot, it stays visually separated from `browser/` and `system/`.
 
 ## Typed providers
 
-`node/functions.ts`:
+`system/functions.ts`:
 
 ```ts
 export const functions = {
@@ -111,7 +111,7 @@ export const functions = {
 };
 ```
 
-`node/provider.ts`:
+`system/provider.ts`:
 
 ```ts
 export default providers
@@ -186,7 +186,7 @@ contextIsolation: true
 nodeIntegration: false
 ```
 
-Node access is exposed only through the preload/provider bridge.
+System access is exposed only through the preload/provider bridge.
 
 ## Philosophy
 
