@@ -43,7 +43,7 @@ export class NodeProjectScaffolder implements ProjectScaffolder {
     const templatePath = candidates.find(existsSync);
 
     if (!templatePath) {
-      throw new Error('Electron Kit templates were not found.');
+      throw new Error('Create Kit Electron templates were not found.');
     }
 
     return templatePath;
@@ -58,7 +58,7 @@ export class NodeProjectScaffolder implements ProjectScaffolder {
     const templatePath = candidates.find(existsSync);
 
     if (!templatePath) {
-      throw new Error('Electron Kit React templates were not found.');
+      throw new Error('Create Kit Electron React templates were not found.');
     }
 
     return templatePath;
