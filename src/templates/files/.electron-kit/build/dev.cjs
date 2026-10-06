@@ -149,7 +149,7 @@ async function main() {
   await rebuild();
 
   const watchers = [
-    watch(resolve(projectRoot, 'node'), { recursive: true }, schedule),
+    watch(resolve(projectRoot, 'system'), { recursive: true }, schedule),
     watch(resolve(projectRoot, 'browser'), { recursive: true }, schedule),
     watch(resolve(projectRoot, 'main.ts'), schedule),
     watch(resolve(projectRoot, '.electron-kit', 'runtime'), { recursive: true }, schedule),
