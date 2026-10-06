@@ -7,9 +7,9 @@ const electron = require('electron');
 
 const projectRoot = resolve(__dirname, '..', '..');
 const cache = resolve(projectRoot, '.electron-kit', 'cache');
-const uiEntry = existsSync(resolve(projectRoot, 'ui', 'main.tsx'))
-  ? 'ui/main.tsx'
-  : 'ui/main.ts';
+const uiEntry = existsSync(resolve(projectRoot, 'src', 'ui', 'main.tsx'))
+  ? 'src/ui/main.tsx'
+  : 'src/ui/main.ts';
 
 let child;
 let timer;
@@ -149,8 +149,8 @@ async function main() {
   await rebuild();
 
   const watchers = [
-    watch(resolve(projectRoot, 'system'), { recursive: true }, schedule),
-    watch(resolve(projectRoot, 'ui'), { recursive: true }, schedule),
+    watch(resolve(projectRoot, 'src', 'system'), { recursive: true }, schedule),
+    watch(resolve(projectRoot, 'src', 'ui'), { recursive: true }, schedule),
     watch(resolve(projectRoot, 'main.ts'), schedule),
     watch(resolve(projectRoot, '.electron-kit', 'runtime'), { recursive: true }, schedule),
     watch(resolve(projectRoot, '.electron-kit', 'bridge'), { recursive: true }, schedule),
