@@ -1,5 +1,7 @@
 import { ipcMain } from 'electron';
+import { watch } from 'node:fs';
 import { join } from 'node:path';
+import type { BrowserWindow } from 'electron';
 import type { ProviderMap, ProviderValue } from './shared.js';
 
 const channel = 'create-kit-electron:invoke';
@@ -76,4 +78,25 @@ export const providers = new Providers();
 
 export function preloadPath(): string {
   return join(__dirname, 'preload.cjs');
+}
+
+export function reloadRendererOnChange(window: BrowserWindow): void {
+  if (process.env.KIT_ELECTRON_DEV !== '1') return;
+
+  let timer: ReturnType<typeof setTimeout> | undefined;
+  const watcher = watch(__dirname, (_event, filename) => {
+    if (filename !== 'reload') return;
+
+    clearTimeout(timer);
+    timer = setTimeout(() => {
+      if (!window.isDestroyed()) {
+        window.webContents.reload();
+      }
+    }, 40);
+  });
+
+  window.once('closed', () => {
+    clearTimeout(timer);
+    watcher.close();
+  });
 }

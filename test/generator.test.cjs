@@ -122,4 +122,31 @@ describe('create-kit-electron', () => {
     assert.equal(existsSync(join(project, 'ui')), false);
     assert.equal(existsSync(join(project, 'system')), false);
   });
+  it('reloads UI changes without restarting Electron', async () => {
+    const { project } = await generate();
+    const dev = await readFile(
+      join(project, 'kit_electron/build/dev.cjs'),
+      'utf8',
+    );
+    const runtime = await readFile(
+      join(project, 'kit_electron/runtime/node.ts'),
+      'utf8',
+    );
+    const main = await readFile(join(project, 'main.ts'), 'utf8');
+
+    const rendererStart = dev.indexOf('async function rebuildRenderer()');
+    const rendererEnd = dev.indexOf('async function stopElectron()');
+    const rendererSection = dev.slice(rendererStart, rendererEnd);
+
+    assert.notEqual(rendererStart, -1);
+    assert.notEqual(rendererEnd, -1);
+    assert.equal(rendererSection.includes('startElectron'), false);
+    assert.equal(rendererSection.includes('writeFile(reloadSignal'), true);
+    assert.equal(dev.includes("schedule('ui')"), true);
+    assert.equal(dev.includes("schedule('main')"), true);
+    assert.equal(runtime.includes('reloadRendererOnChange'), true);
+    assert.equal(runtime.includes('window.webContents.reload()'), true);
+    assert.equal(main.includes('reloadRendererOnChange(window)'), true);
+  });
+
 });

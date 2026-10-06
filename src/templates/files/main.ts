@@ -1,6 +1,9 @@
 import { app, BrowserWindow } from 'electron';
 import { join } from 'node:path';
-import { preloadPath } from './kit_electron/runtime/node.js';
+import {
+  preloadPath,
+  reloadRendererOnChange,
+} from './kit_electron/runtime/node.js';
 import './src/system/provider.js';
 
 async function createWindow() {
@@ -17,6 +20,8 @@ async function createWindow() {
   await window.loadFile(
     join(__dirname, '..', '..', 'src', 'ui', 'index.html'),
   );
+
+  reloadRendererOnChange(window);
 }
 
 app.whenReady().then(async () => {

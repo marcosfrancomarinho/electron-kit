@@ -1,5 +1,5 @@
 const { spawn, spawnSync } = require('node:child_process');
-const { mkdir, rm } = require('node:fs/promises');
+const { mkdir, rm, writeFile } = require('node:fs/promises');
 const { existsSync, watch } = require('node:fs');
 const { dirname, resolve } = require('node:path');
 const { build } = require('esbuild');
@@ -10,11 +10,13 @@ const cache = resolve(projectRoot, 'kit_electron', 'cache');
 const uiEntry = existsSync(resolve(projectRoot, 'src', 'ui', 'main.tsx'))
   ? 'src/ui/main.tsx'
   : 'src/ui/main.ts';
+const reloadSignal = resolve(cache, 'reload');
 
 let child;
 let timer;
 let rebuilding = false;
-let pending = false;
+let scheduled = 'ui';
+let pending;
 
 function compilerPath() {
   const packagePath = require.resolve('typescript/package.json', {
@@ -47,7 +49,19 @@ function checkTypes() {
   }
 }
 
-async function compile() {
+async function buildRenderer() {
+  await build({
+    absWorkingDir: projectRoot,
+    entryPoints: [uiEntry],
+    outfile: resolve(cache, 'browser.js'),
+    bundle: true,
+    platform: 'browser',
+    format: 'iife',
+    target: 'es2022',
+  });
+}
+
+async function compileAll() {
   checkTypes();
 
   await rm(cache, { recursive: true, force: true });
@@ -74,16 +88,14 @@ async function compile() {
       target: 'node22',
       external: ['electron'],
     }),
-    build({
-      absWorkingDir: projectRoot,
-      entryPoints: [uiEntry],
-      outfile: resolve(cache, 'browser.js'),
-      bundle: true,
-      platform: 'browser',
-      format: 'iife',
-      target: 'es2022',
-    }),
+    buildRenderer(),
   ]);
+}
+
+async function rebuildRenderer() {
+  checkTypes();
+  await buildRenderer();
+  await writeFile(reloadSignal, String(Date.now()));
 }
 
 async function stopElectron() {
@@ -105,58 +117,76 @@ async function stopElectron() {
 }
 
 async function startElectron() {
-  await stopElectron();
-
   child = spawn(
     electron,
     [resolve(cache, 'bundle.cjs')],
     {
       cwd: projectRoot,
       stdio: 'inherit',
+      env: {
+        ...process.env,
+        KIT_ELECTRON_DEV: '1',
+      },
     },
   );
 }
 
-async function rebuild() {
+function mergeKind(current, next) {
+  return current === 'main' || next === 'main' ? 'main' : 'ui';
+}
+
+async function rebuild(kind) {
   if (rebuilding) {
-    pending = true;
+    pending = pending ? mergeKind(pending, kind) : kind;
     return;
   }
 
   rebuilding = true;
 
   try {
-    await compile();
-    await startElectron();
+    if (kind === 'ui') {
+      await rebuildRenderer();
+    } else {
+      await stopElectron();
+      await compileAll();
+      await startElectron();
+    }
   } catch (error) {
     console.error(error && error.message ? error.message : error);
   } finally {
     rebuilding = false;
 
     if (pending) {
-      pending = false;
-      await rebuild();
+      const next = pending;
+      pending = undefined;
+      await rebuild(next);
     }
   }
 }
 
-function schedule() {
+function schedule(kind) {
+  scheduled = mergeKind(scheduled, kind);
   clearTimeout(timer);
-  timer = setTimeout(() => void rebuild(), 120);
+  timer = setTimeout(() => {
+    const next = scheduled;
+    scheduled = 'ui';
+    void rebuild(next);
+  }, 120);
 }
 
 async function main() {
-  await rebuild();
+  await rebuild('main');
 
   const watchers = [
-    watch(resolve(projectRoot, 'src', 'system'), { recursive: true }, schedule),
-    watch(resolve(projectRoot, 'src', 'ui'), { recursive: true }, schedule),
-    watch(resolve(projectRoot, 'main.ts'), schedule),
-    watch(resolve(projectRoot, 'kit_electron', 'runtime'), { recursive: true }, schedule),
-    watch(resolve(projectRoot, 'kit_electron', 'bridge'), { recursive: true }, schedule),
+    watch(resolve(projectRoot, 'src', 'ui'), { recursive: true }, () => schedule('ui')),
+    watch(resolve(projectRoot, 'src', 'system'), { recursive: true }, () => schedule('main')),
+    watch(resolve(projectRoot, 'main.ts'), () => schedule('main')),
+    watch(resolve(projectRoot, 'kit_electron', 'runtime'), { recursive: true }, () => schedule('main')),
+    watch(resolve(projectRoot, 'kit_electron', 'bridge'), { recursive: true }, () => schedule('main')),
   ];
 
   const close = async () => {
+    clearTimeout(timer);
     for (const watcher of watchers) watcher.close();
     await stopElectron();
   };

@@ -1,6 +1,6 @@
 {
   "name": "create-kit-electron",
-  "version": "0.1.0",
+  "version": "1.0.2",
   "description": "Create a minimal, type-safe Electron + React + TypeScript project.",
   "type": "module",
   "main": "dist/bundle.cjs",
