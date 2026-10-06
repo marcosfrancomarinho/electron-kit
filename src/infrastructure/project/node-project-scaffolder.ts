@@ -1,7 +1,6 @@
-import { cp, mkdir, rm, writeFile } from 'node:fs/promises';
+import { cp, mkdir, writeFile } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
 import { join, resolve } from 'node:path';
-import type { ProjectTemplate } from '../../application/ports/project-template.js';
 import type { ProjectScaffolder } from '../../application/ports/project-scaffolder.js';
 import type { Terminal } from '../../application/ports/terminal.js';
 
@@ -11,7 +10,7 @@ export class NodeProjectScaffolder implements ProjectScaffolder {
   async create(input: {
     projectPath: string;
     projectName: string;
-    template: ProjectTemplate;
+    template: 'react';
   }): Promise<void> {
     await mkdir(input.projectPath);
 
@@ -19,17 +18,19 @@ export class NodeProjectScaffolder implements ProjectScaffolder {
       recursive: true,
     });
 
-    if (input.template === 'react') {
-      await this.applyReactTemplate(input.projectPath);
-    }
+    await cp(
+      this.reactTemplates(),
+      join(input.projectPath, 'src', 'ui'),
+      { recursive: true },
+    );
 
     await writeFile(
       join(input.projectPath, 'package.json'),
-      this.packageJson(input.projectName, input.template),
+      this.packageJson(input.projectName),
       'utf8',
     );
 
-    this.terminal.success(`📁 Electron ${input.template} project created`);
+    this.terminal.success('📁 React project created');
     this.terminal.success('📦 package.json created');
     this.terminal.success('🔗 Typed provider bridge prepared');
   }
@@ -64,38 +65,7 @@ export class NodeProjectScaffolder implements ProjectScaffolder {
     return templatePath;
   }
 
-  private async applyReactTemplate(projectPath: string): Promise<void> {
-    await rm(join(projectPath, 'src', 'ui', 'main.ts'), {
-      force: true,
-    });
-
-    await cp(
-      this.reactTemplates(),
-      join(projectPath, 'src', 'ui'),
-      { recursive: true },
-    );
-  }
-
-  private packageJson(
-    projectName: string,
-    template: ProjectTemplate,
-  ): string {
-    const dependencies =
-      template === 'react'
-        ? {
-            react: '^19.0.0',
-            'react-dom': '^19.0.0',
-          }
-        : {};
-
-    const reactTypes =
-      template === 'react'
-        ? {
-            '@types/react': '^19.0.0',
-            '@types/react-dom': '^19.0.0',
-          }
-        : {};
-
+  private packageJson(projectName: string): string {
     return JSON.stringify(
       {
         name: projectName,
@@ -109,10 +79,14 @@ export class NodeProjectScaffolder implements ProjectScaffolder {
           package: 'node kit_electron/build/package.cjs',
           type: 'node kit_electron/build/type.cjs',
         },
-        dependencies,
+        dependencies: {
+          react: '^19.0.0',
+          'react-dom': '^19.0.0',
+        },
         devDependencies: {
           '@types/node': '^22.0.0',
-          ...reactTypes,
+          '@types/react': '^19.0.0',
+          '@types/react-dom': '^19.0.0',
           electron: '^44.5.1',
           'electron-builder': '^26.15.3',
           esbuild: '^0.28.2',
