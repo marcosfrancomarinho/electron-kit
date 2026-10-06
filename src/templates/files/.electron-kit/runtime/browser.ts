@@ -1,4 +1,4 @@
-import type registry from '../../node/provider.js';
+import type registry from '../../system/provider.js';
 import type { ProviderRegistry } from './node.js';
 import type { Remote } from './shared.js';
 
