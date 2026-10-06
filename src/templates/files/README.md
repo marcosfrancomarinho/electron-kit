@@ -10,8 +10,8 @@ node/
 provider/
   provider.ts
 main.ts
-index.html
-style.css
+browser/index.html
+browser/style.css
 global.d.ts
 electron-kit/
 package.json
