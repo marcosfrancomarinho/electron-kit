@@ -23,15 +23,15 @@ The generator asks for the project folder name and does not install dependencies
 ```text
 my-app/
 ├── browser/
-│   └── main.ts
+│   ├── main.ts
+│   ├── index.html
+│   └── style.css
 ├── node/
 │   ├── file.ts
 │   └── system.ts
 ├── provider/
 │   └── provider.ts
 ├── main.ts
-├── index.html
-├── style.css
 ├── global.d.ts
 ├── electron-kit/
 │   ├── build/
