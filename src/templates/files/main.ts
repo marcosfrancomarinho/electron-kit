@@ -15,7 +15,7 @@ async function createWindow() {
   });
 
   await window.loadFile(
-    join(__dirname, '..', '..', 'browser', 'index.html'),
+    join(__dirname, '..', '..', 'ui', 'index.html'),
   );
 }
 
