@@ -40,25 +40,44 @@ export class TerminalAdapter implements Terminal {
   showFinalInstructions(projectName: string, manager: PackageManagerName): void {
     const install = manager === 'yarn' ? 'yarn' : manager + ' install';
     const run = manager === 'npm' ? 'npm run' : manager;
+    const packageCommand =
+      manager === 'npm'
+        ? 'npm run package --'
+        : manager === 'yarn'
+          ? 'yarn package'
+          : 'pnpm package';
 
     console.log(
       '\n' +
         this.palette.paint(
           this.palette.green,
-          `✅ Project "${projectName}" created successfully!`,
+          `✅ Electron project "${projectName}" created!`,
         ) +
+        '\n\n📦 Dependencies were not installed automatically.' +
         '\n\n📂 Next steps:\n  ' +
         this.palette.paint(this.palette.bold, `cd ${projectName}`) +
         '\n  ' +
         this.palette.paint(this.palette.yellow, install) +
         '\n  ' +
         this.palette.paint(this.palette.yellow, `${run} dev`) +
-        '\n\n🚀 Commands after installing dependencies:\n  ' +
+        '\n\n🚀 Commands:\n  ' +
         this.formatCommand(run, 'dev', 'Run Electron in development') +
         '\n  ' +
-        this.formatCommand(run, 'package', 'Package the application') +
-        '\n  ' +
         this.formatCommand(run, 'type', 'Check TypeScript types') +
+        '\n  ' +
+        this.formatCommand(run, 'package', 'Package for the current OS') +
+        '\n\n📦 Package targets:\n  ' +
+        this.palette.paint(this.palette.yellow, `${packageCommand} win`) +
+        '      ' +
+        this.palette.paint(this.palette.gray, '# Windows / NSIS') +
+        '\n  ' +
+        this.palette.paint(this.palette.yellow, `${packageCommand} linux`) +
+        '    ' +
+        this.palette.paint(this.palette.gray, '# AppImage + .deb') +
+        '\n  ' +
+        this.palette.paint(this.palette.yellow, `${packageCommand} mac`) +
+        '      ' +
+        this.palette.paint(this.palette.gray, '# macOS / .dmg') +
         '\n',
     );
   }
