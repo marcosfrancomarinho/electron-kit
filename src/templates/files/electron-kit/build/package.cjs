@@ -1,11 +1,15 @@
 const { spawnSync } = require('node:child_process');
 const { mkdir, rm } = require('node:fs/promises');
+const { existsSync } = require('node:fs');
 const { dirname, resolve } = require('node:path');
 const { build: esbuild } = require('esbuild');
 const { build } = require('electron-builder');
 
 const projectRoot = resolve(__dirname, '..', '..');
 const cache = resolve(projectRoot, 'electron-kit', 'cache');
+const browserEntry = existsSync(resolve(projectRoot, 'browser', 'main.tsx'))
+  ? 'browser/main.tsx'
+  : 'browser/main.ts';
 
 function compilerPath() {
   const packagePath = require.resolve('typescript/package.json', {
@@ -67,7 +71,7 @@ async function compile() {
     }),
     esbuild({
       absWorkingDir: projectRoot,
-      entryPoints: ['browser/main.ts'],
+      entryPoints: [browserEntry],
       outfile: resolve(cache, 'browser.js'),
       bundle: true,
       platform: 'browser',
