@@ -1,12 +1,15 @@
 const { spawn, spawnSync } = require('node:child_process');
 const { mkdir, rm } = require('node:fs/promises');
-const { watch } = require('node:fs');
+const { existsSync, watch } = require('node:fs');
 const { dirname, resolve } = require('node:path');
 const { build } = require('esbuild');
 const electron = require('electron');
 
 const projectRoot = resolve(__dirname, '..', '..');
 const cache = resolve(projectRoot, 'electron-kit', 'cache');
+const browserEntry = existsSync(resolve(projectRoot, 'browser', 'main.tsx'))
+  ? 'browser/main.tsx'
+  : 'browser/main.ts';
 
 let child;
 let timer;
@@ -73,7 +76,7 @@ async function compile() {
     }),
     build({
       absWorkingDir: projectRoot,
-      entryPoints: ['browser/main.ts'],
+      entryPoints: [browserEntry],
       outfile: resolve(cache, 'browser.js'),
       bundle: true,
       platform: 'browser',
