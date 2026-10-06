@@ -35,7 +35,7 @@ async function main() {
     if (
       sentName &&
       !sentTemplate &&
-      output.includes('Template [vanilla/react]:')
+      output.includes('Select template: [vanilla/react]:')
     ) {
       sentTemplate = true;
       child.stdin.write(template + '\n');
