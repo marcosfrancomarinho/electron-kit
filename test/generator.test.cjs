@@ -81,8 +81,8 @@ function commonFiles(project) {
     'global.d.ts',
     'browser/index.html',
     'browser/style.css',
-    'node/functions.ts',
-    'node/provider.ts',
+    'system/functions.ts',
+    'system/provider.ts',
     '.electron-kit/build/dev.cjs',
     '.electron-kit/build/package.cjs',
     '.electron-kit/build/type.cjs',
@@ -140,11 +140,11 @@ describe('create-electron-kit', () => {
     assert.equal(pkg.devDependencies['@types/react-dom'].startsWith('^19'), true);
   });
 
-  it('keeps only two visible application folders', async () => {
+  it('keeps only browser and system as visible application folders', async () => {
     const { project } = await generate('vanilla');
 
     assert.equal(existsSync(join(project, 'browser')), true);
-    assert.equal(existsSync(join(project, 'node')), true);
+    assert.equal(existsSync(join(project, 'system')), true);
     assert.equal(existsSync(join(project, 'provider')), false);
     assert.equal(existsSync(join(project, 'src')), false);
   });
