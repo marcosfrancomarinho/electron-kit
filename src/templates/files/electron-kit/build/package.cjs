@@ -12,8 +12,8 @@ async function packageProject() {
       },
       files: [
         'dist/bundle.cjs',
-        'index.html',
-        'style.css',
+        'browser/index.html',
+        'browser/style.css',
         'electron-kit/cache/browser.js',
         'electron-kit/cache/preload.cjs',
         'package.json',
