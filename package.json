@@ -1,12 +1,12 @@
 {
-  "name": "create-electron-kit",
+  "name": "create-kit-electron",
   "version": "0.1.0",
   "description": "Create a minimal, type-safe Electron + TypeScript project.",
   "type": "module",
   "main": "dist/bundle.cjs",
   "source": "src/main.ts",
   "bin": {
-    "create-electron-kit": "dist/bundle.cjs"
+    "create-kit-electron": "dist/bundle.cjs"
   },
   "repository": {
     "type": "git",
