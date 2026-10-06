@@ -1,19 +1,19 @@
-# Electron Kit
+# Create Kit Electron
 
 Minimal Electron + TypeScript project generator with Vanilla and React templates.
 
 ## Create
 
 ```bash
-npx create-electron-kit
+npx create-kit-electron
 ```
 
 Also works with:
 
 ```bash
-npm create electron-kit
-yarn create electron-kit
-pnpm create electron-kit
+npm create kit-electron
+yarn create kit-electron
+pnpm create kit-electron
 ```
 
 The CLI asks for the project name and template:
@@ -136,4 +136,4 @@ contextIsolation: true
 nodeIntegration: false
 ```
 
-System access goes through the typed Electron Kit provider bridge.
+System access goes through the typed Create Kit Electron provider bridge.
