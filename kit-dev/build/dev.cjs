@@ -1,10 +1,11 @@
-const { spawn } = require('node:child_process');
-const { resolve } = require('node:path');
+const { spawn } = require('child_process');
+const { resolve } = require('path');
 const { build, context } = require('esbuild');
 const { buildOptions } = require('./esbuild.config.cjs');
 
 const projectRoot = resolve(__dirname, '..', '..');
 const outputFile = resolve(__dirname, '.cache', 'dev-bundle.cjs');
+const stopTimeout = 3000;
 let child;
 let buildContext;
 let restartPending = false;
@@ -22,7 +23,19 @@ function waitForExit(processToStop) {
   }
 
   return new Promise((resolveExit) => {
-    processToStop.once('exit', (code) => resolveExit(code ?? 0));
+    let finished = false;
+    const finish = (code) => {
+      if (finished) return;
+      finished = true;
+      clearTimeout(forceTimer);
+      resolveExit(code ?? 0);
+    };
+    const forceTimer = setTimeout(() => {
+      processToStop.kill('SIGKILL');
+      finish(1);
+    }, stopTimeout);
+
+    processToStop.once('exit', finish);
     processToStop.kill('SIGTERM');
   });
 }
@@ -37,6 +50,8 @@ function startChild() {
   nextChild.once('exit', () => {
     if (child === nextChild) child = undefined;
   });
+
+  return nextChild;
 }
 
 async function stopChild() {
@@ -47,7 +62,10 @@ async function stopChild() {
 
 async function restartChild() {
   await stopChild();
-  if (!shuttingDown) startChild();
+
+  if (shuttingDown) return;
+
+  startChild();
 }
 
 function queueRestart() {
@@ -68,7 +86,7 @@ function queueRestart() {
 }
 
 const restartPlugin = {
-  name: 'electron-kit-generator-restart',
+  name: 'electron-kit-restart',
   setup(esbuild) {
     esbuild.onStart(() => {
       if (initialBuild) {
@@ -86,32 +104,49 @@ const restartPlugin = {
   },
 };
 
-async function runOnce() {
-  await build({
+function developmentBuildOptions() {
+  return {
     ...buildOptions,
     outfile: outputFile,
+    minify: false,
+    minifySyntax: false,
+    minifyWhitespace: true,
+    minifyIdentifiers: false,
     sourcemap: 'inline',
-  });
+    metafile: false,
+    logLevel: 'info',
+  };
+}
 
-  startChild();
+async function runOnce() {
+  await build(developmentBuildOptions());
+
+  const processToRun = startChild();
+
+  await new Promise((resolveExit) => {
+    processToRun.once('exit', (code) => {
+      process.exitCode = code ?? 1;
+      resolveExit();
+    });
+  });
 }
 
 async function runWatch() {
   buildContext = await context({
-    ...buildOptions,
-    outfile: outputFile,
-    sourcemap: 'inline',
-    plugins: [restartPlugin],
+    ...developmentBuildOptions(),
+    plugins: [...(buildOptions.plugins || []), restartPlugin],
   });
 
   await buildContext.watch();
-  console.log('Electron Kit generator: watching for changes...');
+  console.log('Electron Kit: watching for changes...');
 }
 
 async function shutdown() {
   if (shuttingDown) return;
+
   shuttingDown = true;
   restartPending = false;
+
   if (restartTask) await restartTask;
   await stopChild();
   if (buildContext) await buildContext.dispose();
