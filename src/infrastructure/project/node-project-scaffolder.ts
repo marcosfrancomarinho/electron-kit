@@ -65,13 +65,13 @@ export class NodeProjectScaffolder implements ProjectScaffolder {
   }
 
   private async applyReactTemplate(projectPath: string): Promise<void> {
-    await rm(join(projectPath, 'browser', 'main.ts'), {
+    await rm(join(projectPath, 'ui', 'main.ts'), {
       force: true,
     });
 
     await cp(
       this.reactTemplates(),
-      join(projectPath, 'browser'),
+      join(projectPath, 'ui'),
       { recursive: true },
     );
   }
