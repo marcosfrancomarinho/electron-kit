@@ -32,7 +32,8 @@
   "files": [
     "dist/bundle.cjs",
     "dist/bundle.cjs.map",
-    "src/templates/files"
+    "src/templates/files",
+    "src/templates/react"
   ],
   "keywords": [
     "electron",
