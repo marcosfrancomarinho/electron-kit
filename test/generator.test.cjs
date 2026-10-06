@@ -83,13 +83,13 @@ function commonFiles(project) {
     'browser/style.css',
     'node/functions.ts',
     'node/provider.ts',
-    'electron-kit/build/dev.cjs',
-    'electron-kit/build/package.cjs',
-    'electron-kit/build/type.cjs',
-    'electron-kit/bridge/preload.ts',
-    'electron-kit/runtime/node.ts',
-    'electron-kit/runtime/browser.ts',
-    'electron-kit/runtime/shared.ts',
+    '.electron-kit/build/dev.cjs',
+    '.electron-kit/build/package.cjs',
+    '.electron-kit/build/type.cjs',
+    '.electron-kit/bridge/preload.ts',
+    '.electron-kit/runtime/node.ts',
+    '.electron-kit/runtime/browser.ts',
+    '.electron-kit/runtime/shared.ts',
     'tsconfig.json',
   ].map((path) => join(project, path));
 }
@@ -117,7 +117,7 @@ describe('create-electron-kit', () => {
       'type',
     ]);
     assert.deepEqual(pkg.dependencies, {});
-    assert.equal(pkg.main, 'electron-kit/cache/bundle.cjs');
+    assert.equal(pkg.main, '.electron-kit/cache/bundle.cjs');
   });
 
   it('creates the React template with TSX and React dependencies', async () => {
