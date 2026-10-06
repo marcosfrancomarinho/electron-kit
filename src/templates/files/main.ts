@@ -14,7 +14,9 @@ async function createWindow() {
     },
   });
 
-  await window.loadFile(join(app.getAppPath(), 'browser', 'index.html'));
+  await window.loadFile(
+    join(__dirname, '..', '..', 'browser', 'index.html'),
+  );
 }
 
 app.whenReady().then(async () => {
