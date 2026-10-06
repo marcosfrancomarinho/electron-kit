@@ -102,11 +102,11 @@ export class NodeProjectScaffolder implements ProjectScaffolder {
         version: '1.0.0',
         private: true,
         type: 'module',
-        main: 'electron-kit/cache/bundle.cjs',
+        main: '.electron-kit/cache/bundle.cjs',
         scripts: {
-          dev: 'node electron-kit/build/dev.cjs',
-          package: 'node electron-kit/build/package.cjs',
-          type: 'node electron-kit/build/type.cjs',
+          dev: 'node .electron-kit/build/dev.cjs',
+          package: 'node .electron-kit/build/package.cjs',
+          type: 'node .electron-kit/build/type.cjs',
         },
         dependencies,
         devDependencies: {
