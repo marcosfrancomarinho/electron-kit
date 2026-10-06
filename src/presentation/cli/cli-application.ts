@@ -21,7 +21,10 @@ export class CliApplication {
       ).toString();
 
       const template = this.template(
-        await this.terminal.ask('Template [vanilla/react]: '),
+        await this.terminal.select(
+          'Select template:',
+          ['Vanilla', 'React'],
+        ),
       );
 
       await this.createProject.execute({
