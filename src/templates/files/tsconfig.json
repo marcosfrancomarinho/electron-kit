@@ -19,6 +19,6 @@
     "node/**/*.ts",
     "browser/**/*.ts",
     "global.d.ts",
-    "electron-kit/**/*.ts"
+    ".electron-kit/**/*.ts"
   ]
 }
