@@ -19,6 +19,6 @@
     "src/**/*.ts",
     "src/**/*.tsx",
     "global.d.ts",
-    "_electron_kit/**/*.ts"
+    "electron_kit/**/*.ts"
   ]
 }
