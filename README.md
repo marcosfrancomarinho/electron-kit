@@ -38,7 +38,7 @@ npm run dev
 
 ```text
 my-app/
-├── electron_kit/
+├── kit_electron/
 ├── src/
 │   ├── ui/
 │   └── system/
@@ -55,7 +55,7 @@ Contexts:
 src/ui/        interface
 src/system/    Node/system providers
 main.ts        Electron window entry
-electron_kit/  internal runtime and build tools
+kit_electron/  internal runtime and build tools
 ```
 
 ## Templates
