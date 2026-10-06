@@ -2,7 +2,7 @@
 
 Minimal Electron + TypeScript project generator with a typed Node-to-Browser bridge.
 
-Electron Kit keeps the Electron plumbing inside `electron-kit/` and leaves the application code small and visible.
+Electron Kit keeps the Electron plumbing inside `. .electron-kit/` and leaves the application code small and visible.
 
 ## Create a project
 
@@ -78,7 +78,7 @@ my-app/
 ├── node/
 │   ├── functions.ts
 │   └── provider.ts
-├── electron-kit/
+├──  .electron-kit/
 │   ├── build/
 │   │   ├── dev.cjs
 │   │   ├── package.cjs
@@ -105,7 +105,7 @@ node/
 main.ts
 ```
 
-Internal Electron IPC, preload, generated JavaScript and build tooling stay inside `electron-kit/`.
+Internal Electron IPC, preload, generated JavaScript and build tooling stay inside `. .electron-kit/`.
 
 ## Typed providers
 
@@ -173,7 +173,7 @@ Electron Kit compiles the application and runs Electron.
 Generated JavaScript stays under:
 
 ```text
-electron-kit/cache/
+ .electron-kit/cache/
 ├── bundle.cjs
 ├── preload.cjs
 └── browser.js
@@ -263,5 +263,5 @@ Node functionality is exposed through the typed provider bridge and Electron pre
 - typed `providers.register()`
 - typed `browser.get()`
 - no duplicated provider contracts
-- Electron plumbing hidden under `electron-kit/`
+- Electron plumbing hidden under `. .electron-kit/`
 - only `dev`, `type` and `package` as public project commands
