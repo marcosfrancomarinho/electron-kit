@@ -22,7 +22,9 @@
     "dev": "node kit-dev/build/dev.cjs",
     "build": "node kit-dev/build/esbuild.config.cjs",
     "type": "node kit-dev/build/type.cjs",
-    "prepack": "npm run build"
+    "prepack": "npm run build",
+    "pretest": "npm run build",
+    "test": "node --test test/*.test.cjs"
   },
   "devDependencies": {
     "@types/node": "^22.0.0",
