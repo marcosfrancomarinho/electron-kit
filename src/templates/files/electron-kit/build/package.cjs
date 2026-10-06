@@ -3,11 +3,14 @@ const { mkdir, rm } = require('node:fs/promises');
 const { existsSync } = require('node:fs');
 const { dirname, resolve } = require('node:path');
 const { build: esbuild } = require('esbuild');
-const { build } = require('electron-builder');
+const { build, Platform } = require('electron-builder');
 
 const projectRoot = resolve(__dirname, '..', '..');
 const cache = resolve(projectRoot, 'electron-kit', 'cache');
-const browserEntry = existsSync(resolve(projectRoot, 'browser', 'main.tsx'))
+
+const browserEntry = existsSync(
+  resolve(projectRoot, 'browser', 'main.tsx'),
+)
   ? 'browser/main.tsx'
   : 'browser/main.ts';
 
@@ -19,7 +22,9 @@ function compilerPath() {
   const compiler = typeof bin === 'string' ? bin : bin?.tsc;
 
   if (!compiler) {
-    throw new Error('The installed TypeScript package does not provide tsc.');
+    throw new Error(
+      'The installed TypeScript package does not provide tsc.',
+    );
   }
 
   return resolve(dirname(packagePath), compiler);
@@ -81,11 +86,43 @@ async function compile() {
   ]);
 }
 
+function currentPlatform() {
+  if (process.platform === 'win32') return 'win';
+  if (process.platform === 'darwin') return 'mac';
+  return 'linux';
+}
+
+function targetPlatform(name) {
+  switch (name) {
+    case 'win':
+    case 'windows':
+      return Platform.WINDOWS.createTarget();
+
+    case 'mac':
+    case 'macos':
+      return Platform.MAC.createTarget();
+
+    case 'linux':
+      return Platform.LINUX.createTarget();
+
+    default:
+      throw new Error(
+        'Invalid platform. Use win, mac or linux.',
+      );
+  }
+}
+
 async function packageProject() {
   await compile();
 
+  const requested = process.argv[2] ?? currentPlatform();
+  const targets = targetPlatform(requested);
+
+  console.log(`📦 Packaging for ${requested}`);
+
   await build({
     projectDir: projectRoot,
+    targets,
     config: {
       extraMetadata: {
         main: 'electron-kit/cache/bundle.cjs',
@@ -101,6 +138,17 @@ async function packageProject() {
         'browser/style.css',
         'package.json',
       ],
+      win: {
+        target: ['nsis'],
+      },
+      linux: {
+        target: ['AppImage', 'deb'],
+        category: 'Utility',
+      },
+      mac: {
+        target: ['dmg'],
+        category: 'public.app-category.utilities',
+      },
     },
   });
 
