@@ -39,7 +39,7 @@ jobs:
         run: npm pack --dry-run
 
   package-native:
-    name: Package Vanilla - ${{ matrix.target }}
+    name: Package React - ${{ matrix.target }}
     needs: generator
     strategy:
       fail-fast: false
@@ -69,8 +69,8 @@ jobs:
       - name: Build generator
         run: npm run build
 
-      - name: Generate Vanilla fixture
-        run: node test/generate-fixture.cjs vanilla fixture
+      - name: Generate React fixture
+        run: node test/generate-fixture.cjs fixture
 
       - name: Install generated project
         working-directory: fixture
@@ -87,48 +87,6 @@ jobs:
       - name: Upload package
         uses: actions/upload-artifact@v4
         with:
-          name: create-kit-electron-vanilla-${{ matrix.target }}
+          name: create-kit-electron-react-${{ matrix.target }}
           path: fixture/release/**
-          if-no-files-found: error
-
-  react:
-    name: React template
-    needs: generator
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: 22
-
-      - name: Install generator
-        run: npm install
-
-      - name: Build generator
-        run: npm run build
-
-      - name: Generate React fixture
-        run: node test/generate-fixture.cjs react fixture-react
-
-      - name: Install generated project
-        working-directory: fixture-react
-        run: npm install
-
-      - name: Type React project
-        working-directory: fixture-react
-        run: npm run type
-
-      - name: Package React project
-        working-directory: fixture-react
-        run: npm run package -- linux
-
-      - name: Upload React package
-        uses: actions/upload-artifact@v4
-        with:
-          name: create-kit-electron-react-linux
-          path: fixture-react/release/**
           if-no-files-found: error
