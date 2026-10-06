@@ -1,4 +1,4 @@
-import { app, ipcMain } from 'electron';
+import { ipcMain } from 'electron';
 import { join } from 'node:path';
 import type { ProviderMap, ProviderValue } from './shared.js';
 
@@ -75,10 +75,5 @@ export type ProviderRegistry<T> =
 export const providers = new Providers();
 
 export function preloadPath(): string {
-  return join(
-    app.getAppPath(),
-    'electron-kit',
-    'cache',
-    'preload.cjs',
-  );
+  return join(__dirname, 'preload.cjs');
 }
