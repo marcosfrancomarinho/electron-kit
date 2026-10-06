@@ -16,9 +16,8 @@
   },
   "include": [
     "main.ts",
-    "system/**/*.ts",
-    "ui/**/*.ts",
-    "ui/**/*.tsx",
+    "src/**/*.ts",
+    "src/**/*.tsx",
     "global.d.ts",
     ".electron-kit/**/*.ts"
   ]
