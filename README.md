@@ -2,125 +2,98 @@
 
 Create a minimal Electron + TypeScript project with a typed Node-to-Browser bridge.
 
-## Create a project
-
-### npm / npx
+## Create
 
 ```bash
 npx create-electron-kit
 ```
 
-or:
+Also works with:
 
 ```bash
 npm create electron-kit
-```
-
-### Yarn
-
-```bash
 yarn create electron-kit
-```
-
-### pnpm
-
-```bash
 pnpm create electron-kit
 ```
 
-Electron Kit asks for the project folder name and creates the template.
+The generator asks for the project folder name and does not install dependencies automatically.
 
-It does **not** install dependencies automatically.
-
-After generation:
-
-```bash
-cd my-app
-npm install
-npm run dev
-```
-
-Use `yarn` or `pnpm install` when the project was created through those package managers.
-
-## Generated architecture
+## Generated project
 
 ```text
 my-app/
-├── src/
-│   ├── node/
-│   │   ├── main.ts
-│   │   ├── file.ts
-│   │   └── system.ts
-│   ├── providers.ts
-│   └── browser/
-│       ├── index.html
-│       ├── main.ts
-│       └── style.css
+├── browser/
+│   └── main.ts
+├── node/
+│   ├── file.ts
+│   └── system.ts
+├── provider/
+│   └── provider.ts
+├── main.ts
+├── index.html
+├── style.css
+├── global.d.ts
 ├── electron-kit/
-│   ├── runtime/
-│   │   ├── node.ts
-│   │   ├── browser.ts
-│   │   └── shared.ts
+│   ├── build/
 │   ├── bridge/
-│   │   └── preload.ts
-│   └── build/
-│       ├── dev.cjs
-│       ├── build.cjs
-│       ├── package.cjs
-│       └── type.cjs
+│   ├── runtime/
+│   └── cache/
 ├── package.json
-└── tsconfig.json
+├── tsconfig.json
+└── README.md
 ```
 
-## Providers
+Application code stays visible and small. Internal build, IPC, preload, runtime and cache files stay inside `electron-kit/`.
 
-Node code is registered with `providers.register()`:
+## Typed providers
+
+Node-side registration:
 
 ```ts
-import { providers } from '../electron-kit/runtime/node.js';
-import { file } from './node/file.js';
-import { system } from './node/system.js';
-
 export default providers
   .register('file', file)
   .register('system', system)
   .register('version', () => '1.0.0');
 ```
 
-The Browser consumes the same contract with `browser.get()`:
+Browser-side access:
 
 ```ts
-import { browser } from '../../electron-kit/runtime/browser.js';
-
 const file = browser.get('file');
-const content = await file.read('config.json');
+
+await file.read('config.json');
 ```
 
-Provider tokens, function parameters and return values are inferred by TypeScript. No duplicated provider interface is required.
+The Browser API is inferred directly from the provider registry.
 
-IPC, `contextBridge`, `ipcMain` and `ipcRenderer` stay behind the template runtime.
-
-## Generated commands
+## Commands
 
 ```bash
 npm run dev
 npm run build
+npm start
 npm run package
 npm run type
 ```
 
-- `dev`: build, open Electron and rebuild/restart on changes.
-- `build`: create the main, preload and Browser bundles.
-- `package`: build and package the desktop application.
-- `type`: run the TypeScript type checker.
+`build` creates:
+
+```text
+dist/
+└── bundle.cjs
+```
+
+Generated Browser and preload bundles stay under:
+
+```text
+electron-kit/cache/
+```
 
 ## Philosophy
 
-Electron Kit follows the same minimal generator idea as Kit Dev:
-
-- TypeScript first;
-- small generated project;
-- no framework required;
-- no automatic dependency installation;
-- typed Node/Browser boundary;
-- minimal public API: `providers.register()` and `browser.get()`.
+- TypeScript first
+- minimal visible project structure
+- no automatic dependency installation
+- typed `providers.register()`
+- typed `browser.get()`
+- internal Electron plumbing hidden under `electron-kit/`
