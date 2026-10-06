@@ -75,5 +75,5 @@ export type ProviderRegistry<T> =
 export const providers = new Providers();
 
 export function preloadPath(): string {
-  return join(__dirname, 'preload.cjs');
+  return join(process.cwd(), 'electron-kit', 'cache', 'preload.cjs');
 }
