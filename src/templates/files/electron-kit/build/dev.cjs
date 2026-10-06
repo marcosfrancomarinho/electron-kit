@@ -6,7 +6,6 @@ const { build } = require('esbuild');
 const electron = require('electron');
 
 const projectRoot = resolve(__dirname, '..', '..');
-const dist = resolve(projectRoot, 'dist');
 const cache = resolve(projectRoot, 'electron-kit', 'cache');
 
 let child;
@@ -48,16 +47,14 @@ function checkTypes() {
 async function compile() {
   checkTypes();
 
-  await rm(dist, { recursive: true, force: true });
   await rm(cache, { recursive: true, force: true });
-  await mkdir(dist, { recursive: true });
   await mkdir(cache, { recursive: true });
 
   await Promise.all([
     build({
       absWorkingDir: projectRoot,
       entryPoints: ['main.ts'],
-      outfile: resolve(dist, 'bundle.cjs'),
+      outfile: resolve(cache, 'bundle.cjs'),
       bundle: true,
       platform: 'node',
       format: 'cjs',
@@ -109,7 +106,7 @@ async function startElectron() {
 
   child = spawn(
     electron,
-    [resolve(dist, 'bundle.cjs')],
+    [resolve(cache, 'bundle.cjs')],
     {
       cwd: projectRoot,
       stdio: 'inherit',
