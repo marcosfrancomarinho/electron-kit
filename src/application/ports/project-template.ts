@@ -1,1 +1,1 @@
-export type ProjectTemplate = 'vanilla' | 'react';
+export type ProjectTemplate = 'react';
