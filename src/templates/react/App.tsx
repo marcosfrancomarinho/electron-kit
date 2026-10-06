@@ -12,7 +12,7 @@ export function App() {
 
   return (
     <main>
-      <h1>Electron Kit</h1>
+      <h1>Create Kit Electron</h1>
       <p>
         Version <span>{version || '...'}</span>
       </p>
