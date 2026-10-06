@@ -2,30 +2,10 @@
 
 This project was generated with Electron Kit.
 
-## Application structure
+## Structure
 
 ```text
-browser/
-node/
-main.ts
-global.d.ts
-electron-kit/
-package.json
-tsconfig.json
-```
-
-Your application code normally stays in:
-
-```text
-browser/
-node/
-main.ts
-```
-
-Electron Kit internals stay inside:
-
-```text
-electron-kit/
+.electron-kit/
 ├── build/
 │   ├── dev.cjs
 │   ├── package.cjs
@@ -33,11 +13,28 @@ electron-kit/
 ├── bridge/
 ├── runtime/
 └── cache/
+
+browser/
+node/
+main.ts
+global.d.ts
+package.json
+tsconfig.json
+```
+
+The folder `.electron-kit/` contains Electron Kit internals and stays visually separated from the application code.
+
+You normally work in:
+
+```text
+browser/
+node/
+main.ts
 ```
 
 ## Browser
 
-Vanilla projects use:
+Vanilla:
 
 ```text
 browser/
@@ -46,7 +43,7 @@ browser/
 └── style.css
 ```
 
-React projects use:
+React:
 
 ```text
 browser/
@@ -58,9 +55,7 @@ browser/
 
 ## Node providers
 
-Node functionality lives in `node/functions.ts`.
-
-Example:
+Put Node functionality in `node/functions.ts`:
 
 ```ts
 export const functions = {
@@ -79,7 +74,7 @@ export default providers
   .register('system', functions.system);
 ```
 
-Then use it from Browser code:
+Use it from Browser code:
 
 ```ts
 const system = browser.get('system');
@@ -87,11 +82,9 @@ const system = browser.get('system');
 const platform = await system.platform();
 ```
 
-The provider token, method parameters and return types are inferred by TypeScript.
+Provider names, parameters and return values are inferred by TypeScript.
 
 ## Commands
-
-Only three public commands are generated:
 
 ```bash
 npm run dev
@@ -99,32 +92,28 @@ npm run type
 npm run package
 ```
 
-### Dev
+### Development
 
 ```bash
 npm run dev
 ```
 
-Runs the Electron application in development.
-
 Generated JavaScript stays in:
 
 ```text
-electron-kit/cache/
+.electron-kit/cache/
 ├── bundle.cjs
 ├── preload.cjs
 └── browser.js
 ```
 
-### Type
+### Type checking
 
 ```bash
 npm run type
 ```
 
-Checks TypeScript without emitting files.
-
-### Package
+### Packaging
 
 Current operating system:
 
@@ -140,24 +129,16 @@ npm run package -- linux
 npm run package -- mac
 ```
 
-Outputs:
-
-| Target | Format |
+| Target | Output |
 |---|---|
 | `win` | NSIS / `.exe` |
 | `linux` | AppImage + `.deb` |
 | `mac` | `.dmg` |
 
-Packaged applications are generated under:
-
-```text
-release/
-```
-
-For release builds, prefer packaging on the target operating system.
+Packages are written to `release/`.
 
 ## Electron isolation
 
-The generated window uses context isolation and keeps Node integration disabled.
+The generated BrowserWindow uses `contextIsolation: true` and `nodeIntegration: false`.
 
-Browser code accesses Node functionality only through the Electron Kit provider bridge.
+Browser code reaches Node functionality only through the typed Electron Kit provider bridge.
