@@ -1,6 +1,6 @@
 # Create Kit Electron
 
-Minimal Electron + TypeScript project generator with Vanilla and React templates.
+Minimal Electron + React + TypeScript project generator.
 
 ## Create
 
@@ -16,15 +16,7 @@ yarn create kit-electron
 pnpm create kit-electron
 ```
 
-The CLI asks for the project name and template:
-
-```text
-Enter project name: my-app
-
-Select template:
-❯ Vanilla
-  React
-```
+The CLI asks only for the project name.
 
 Dependencies are not installed automatically.
 
@@ -58,34 +50,8 @@ main.ts        Electron window entry
 kit_electron/  internal runtime and build tools
 ```
 
-## Templates
+## Structure
 
-Vanilla:
-
-```text
-src/ui/
-├── main.ts
-├── index.html
-└── style.css
-```
-
-React:
-
-```text
-src/ui/
-├── main.tsx
-├── App.tsx
-├── index.html
-└── style.css
-```
-
-System:
-
-```text
-src/system/
-├── functions.ts
-└── provider.ts
-```
 
 The starter exposes only the Electron version:
 
