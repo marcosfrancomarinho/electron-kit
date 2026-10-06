@@ -9,10 +9,10 @@ const projectRoot = resolve(__dirname, '..', '..');
 const cache = resolve(projectRoot, '.electron-kit', 'cache');
 
 const uiEntry = existsSync(
-  resolve(projectRoot, 'ui', 'main.tsx'),
+  resolve(projectRoot, 'src', 'ui', 'main.tsx'),
 )
-  ? 'ui/main.tsx'
-  : 'ui/main.ts';
+  ? 'src/ui/main.tsx'
+  : 'src/ui/main.ts';
 
 function compilerPath() {
   const packagePath = require.resolve('typescript/package.json', {
@@ -134,8 +134,8 @@ async function packageProject() {
         '.electron-kit/cache/bundle.cjs',
         '.electron-kit/cache/browser.js',
         '.electron-kit/cache/preload.cjs',
-        'ui/index.html',
-        'ui/style.css',
+        'src/ui/index.html',
+        'src/ui/style.css',
         'package.json',
       ],
       win: {
