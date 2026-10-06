@@ -1,0 +1,137 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  generator:
+    name: Generator - ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - ubuntu-latest
+          - windows-latest
+          - macos-latest
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install
+        run: npm ci
+
+      - name: TypeScript
+        run: npm run type
+
+      - name: Tests
+        run: npm test
+
+      - name: Package dry run
+        run: npm pack --dry-run
+
+  package-native:
+    name: Package Vanilla - ${{ matrix.target }}
+    needs: generator
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: windows-latest
+            target: win
+          - os: ubuntu-latest
+            target: linux
+          - os: macos-latest
+            target: mac
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install generator
+        run: npm ci
+
+      - name: Build generator
+        run: npm run build
+
+      - name: Generate Vanilla fixture
+        run: node test/generate-fixture.cjs vanilla fixture
+
+      - name: Install generated project
+        working-directory: fixture
+        run: npm install
+
+      - name: Type generated project
+        working-directory: fixture
+        run: npm run type
+
+      - name: Package generated project
+        working-directory: fixture
+        run: npm run package -- ${{ matrix.target }}
+
+      - name: Upload package
+        uses: actions/upload-artifact@v4
+        with:
+          name: electron-kit-vanilla-${{ matrix.target }}
+          path: fixture/release/**
+          if-no-files-found: error
+
+  react:
+    name: React template
+    needs: generator
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install generator
+        run: npm ci
+
+      - name: Build generator
+        run: npm run build
+
+      - name: Generate React fixture
+        run: node test/generate-fixture.cjs react fixture-react
+
+      - name: Install generated project
+        working-directory: fixture-react
+        run: npm install
+
+      - name: Type React project
+        working-directory: fixture-react
+        run: npm run type
+
+      - name: Package React project
+        working-directory: fixture-react
+        run: npm run package -- linux
+
+      - name: Upload React package
+        uses: actions/upload-artifact@v4
+        with:
+          name: electron-kit-react-linux
+          path: fixture-react/release/**
+          if-no-files-found: error
