@@ -18,14 +18,17 @@ yarn create electron-kit
 pnpm create electron-kit
 ```
 
-The CLI asks for:
+The CLI asks for the project name and then shows an interactive template selector:
 
 ```text
 Enter project name: my-app
-Template [vanilla/react]:
+
+Select template:
+❯ Vanilla
+  React
 ```
 
-Press Enter to use `vanilla`.
+Use the arrow keys and press Enter to confirm. Vanilla starts selected by default.
 
 Dependencies are not installed automatically.
 
