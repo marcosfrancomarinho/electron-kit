@@ -1,13 +1,38 @@
+:root {
+  font-family: Inter, system-ui, sans-serif;
+  color: #f7f7f8;
+  background: #0d0d0f;
+}
+
+* {
+  box-sizing: border-box;
+}
+
 body {
   margin: 0;
-  font-family: system-ui, sans-serif;
-  background: #111;
-  color: #f5f5f5;
 }
 
 main {
   min-height: 100vh;
   display: grid;
   place-content: center;
+  gap: 10px;
   text-align: center;
+}
+
+h1 {
+  margin: 0;
+  font-size: clamp(2.5rem, 8vw, 5rem);
+  letter-spacing: -0.05em;
+}
+
+p {
+  margin: 0;
+  color: #9b9ba3;
+  font-size: 0.95rem;
+}
+
+span {
+  color: #f7f7f8;
+  font-weight: 600;
 }
