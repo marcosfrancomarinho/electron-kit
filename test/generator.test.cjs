@@ -17,7 +17,7 @@ after(async () => {
 });
 
 async function generate(template) {
-  const parent = await mkdtemp(join(tmpdir(), 'electron-kit-'));
+  const parent = await mkdtemp(join(tmpdir(), 'create-kit-electron-'));
   const name = 'app-' + template;
   const project = join(parent, name);
   fixtures.push(parent);
@@ -94,7 +94,7 @@ function commonFiles(project) {
   ].map((path) => join(project, path));
 }
 
-describe('create-electron-kit', () => {
+describe('create-kit-electron', () => {
   it('creates the minimal Vanilla template without installing dependencies', async () => {
     const { project } = await generate('vanilla');
 
