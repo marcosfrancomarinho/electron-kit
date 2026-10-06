@@ -14,7 +14,7 @@ This project was generated with Electron Kit.
 ├── runtime/
 └── cache/
 
-browser/
+ui/
 system/
 main.ts
 global.d.ts
@@ -27,17 +27,17 @@ The folder `.electron-kit/` contains Electron Kit internals and stays visually s
 You normally work in:
 
 ```text
-browser/
+ui/
 system/
 main.ts
 ```
 
-## Browser
+## UI
 
 Vanilla:
 
 ```text
-browser/
+ui/
 ├── main.ts
 ├── index.html
 └── style.css
@@ -46,7 +46,7 @@ browser/
 React:
 
 ```text
-browser/
+ui/
 ├── main.tsx
 ├── App.tsx
 ├── index.html
@@ -74,7 +74,7 @@ export default providers
   .register('system', functions.system);
 ```
 
-Use it from Browser code:
+Use it from UI code:
 
 ```ts
 const system = browser.get('system');
@@ -141,4 +141,4 @@ Packages are written to `release/`.
 
 The generated BrowserWindow uses `contextIsolation: true` and `nodeIntegration: false`.
 
-Browser code reaches System functionality only through the typed Electron Kit provider bridge.
+UI code reaches System functionality only through the typed Electron Kit provider bridge.
