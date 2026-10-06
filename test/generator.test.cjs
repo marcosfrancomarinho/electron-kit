@@ -79,10 +79,10 @@ function commonFiles(project) {
   return [
     'main.ts',
     'global.d.ts',
-    'ui/index.html',
-    'ui/style.css',
-    'system/functions.ts',
-    'system/provider.ts',
+    'src/ui/index.html',
+    'src/ui/style.css',
+    'src/system/functions.ts',
+    'src/system/provider.ts',
     '.electron-kit/build/dev.cjs',
     '.electron-kit/build/package.cjs',
     '.electron-kit/build/type.cjs',
@@ -102,9 +102,9 @@ describe('create-electron-kit', () => {
       assert.equal(existsSync(file), true, file);
     }
 
-    assert.equal(existsSync(join(project, 'ui/main.ts')), true);
-    assert.equal(existsSync(join(project, 'ui/main.tsx')), false);
-    assert.equal(existsSync(join(project, 'ui/App.tsx')), false);
+    assert.equal(existsSync(join(project, 'src/ui/main.ts')), true);
+    assert.equal(existsSync(join(project, 'src/ui/main.tsx')), false);
+    assert.equal(existsSync(join(project, 'src/ui/App.tsx')), false);
     assert.equal(existsSync(join(project, 'node_modules')), false);
     assert.equal(existsSync(join(project, 'dist')), false);
     assert.equal(existsSync(join(project, 'release')), false);
@@ -127,9 +127,9 @@ describe('create-electron-kit', () => {
       assert.equal(existsSync(file), true, file);
     }
 
-    assert.equal(existsSync(join(project, 'ui/main.ts')), false);
-    assert.equal(existsSync(join(project, 'ui/main.tsx')), true);
-    assert.equal(existsSync(join(project, 'ui/App.tsx')), true);
+    assert.equal(existsSync(join(project, 'src/ui/main.ts')), false);
+    assert.equal(existsSync(join(project, 'src/ui/main.tsx')), true);
+    assert.equal(existsSync(join(project, 'src/ui/App.tsx')), true);
     assert.equal(existsSync(join(project, 'node_modules')), false);
 
     const pkg = await packageJson(project);
@@ -140,12 +140,13 @@ describe('create-electron-kit', () => {
     assert.equal(pkg.devDependencies['@types/react-dom'].startsWith('^19'), true);
   });
 
-  it('keeps only ui and system as visible application folders', async () => {
+  it('keeps application code under src', async () => {
     const { project } = await generate('vanilla');
 
-    assert.equal(existsSync(join(project, 'ui')), true);
-    assert.equal(existsSync(join(project, 'system')), true);
-    assert.equal(existsSync(join(project, 'provider')), false);
-    assert.equal(existsSync(join(project, 'src')), false);
+    assert.equal(existsSync(join(project, 'src')), true);
+    assert.equal(existsSync(join(project, 'src/ui')), true);
+    assert.equal(existsSync(join(project, 'src/system')), true);
+    assert.equal(existsSync(join(project, 'ui')), false);
+    assert.equal(existsSync(join(project, 'system')), false);
   });
 });
