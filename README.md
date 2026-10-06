@@ -2,7 +2,7 @@
 
 Minimal Electron + TypeScript project generator with a typed system-to-UI bridge.
 
-Electron Kit keeps its internal tooling inside `.electron-kit/`, leaving the application code small and visible.
+Electron Kit keeps its internal tooling inside `_electron_kit/`, leaving the application code small and visible.
 
 ## Create a project
 
@@ -71,7 +71,7 @@ src/system/
 
 ```text
 my-app/
-├── .electron-kit/
+├── _electron_kit/
 │   ├── build/
 │   │   ├── dev.cjs
 │   │   ├── package.cjs
@@ -152,7 +152,7 @@ npm run dev
 Generated JavaScript stays in:
 
 ```text
-.electron-kit/cache/
+_electron_kit/cache/
 ├── bundle.cjs
 ├── preload.cjs
 └── browser.js
@@ -201,5 +201,5 @@ System access is exposed only through the preload/provider bridge.
 - typed `providers.register()`
 - typed `browser.get()`
 - no duplicated provider contracts
-- hidden internal tooling under `.electron-kit/`
+- hidden internal tooling under `_electron_kit/`
 - only `dev`, `type` and `package` as public commands
