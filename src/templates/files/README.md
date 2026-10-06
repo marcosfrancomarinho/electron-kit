@@ -1,19 +1,26 @@
 # Electron Kit App
 
-This project was generated with Electron Kit.
+Generated with Electron Kit.
+
+## Structure
+
+```text
+browser/
+node/
+provider.ts
+index.html
+style.css
+electron-kit/
+package.json
+tsconfig.json
+```
+
+The public application code stays at the project root. Internal bridge, build scripts, runtime helpers and cache stay inside `electron-kit/`.
 
 ## Install
 
-Dependencies are intentionally not installed by the generator.
-
 ```bash
 npm install
-```
-
-## Run
-
-```bash
-npm run dev
 ```
 
 ## Commands
@@ -21,13 +28,23 @@ npm run dev
 ```bash
 npm run dev
 npm run build
+npm start
 npm run package
 npm run type
 ```
 
-## Node to Browser bridge
+`npm run build` generates:
 
-Register Node/Electron functionality in `src/providers.ts`:
+```text
+dist/
+└── bundle.cjs
+```
+
+Electron Kit keeps generated preload and Browser bundles under `electron-kit/cache/`.
+
+## Providers
+
+Register Node functionality in `provider.ts`:
 
 ```ts
 export default providers
@@ -35,7 +52,7 @@ export default providers
   .register('system', system);
 ```
 
-Consume it from Browser code:
+Use it from Browser code:
 
 ```ts
 const file = browser.get('file');
