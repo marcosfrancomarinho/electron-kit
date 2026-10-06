@@ -1,6 +1,6 @@
 import { app, BrowserWindow } from 'electron';
 import { join } from 'node:path';
-import { preloadPath } from './electron-kit/runtime/node.js';
+import { preloadPath } from './.electron-kit/runtime/node.js';
 import './node/provider.js';
 
 async function createWindow() {
