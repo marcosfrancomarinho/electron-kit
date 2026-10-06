@@ -42,7 +42,6 @@ async function buildProject() {
       format: 'cjs',
       target: 'node22',
       external: ['electron'],
-      sourcemap: true,
     }),
     build({
       absWorkingDir: projectRoot,
@@ -53,7 +52,6 @@ async function buildProject() {
       format: 'cjs',
       target: 'node22',
       external: ['electron'],
-      sourcemap: true,
     }),
     build({
       absWorkingDir: projectRoot,
@@ -63,7 +61,6 @@ async function buildProject() {
       platform: 'browser',
       format: 'iife',
       target: 'es2022',
-      sourcemap: true,
     }),
   ]);
 
