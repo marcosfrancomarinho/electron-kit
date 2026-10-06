@@ -1,10 +1,7 @@
 import { cp, mkdir, writeFile } from 'node:fs/promises';
-import { dirname, join, resolve } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { join, resolve } from 'node:path';
 import type { ProjectScaffolder } from '../../application/ports/project-scaffolder.js';
 import type { Terminal } from '../../application/ports/terminal.js';
-
-const currentDir = dirname(fileURLToPath(import.meta.url));
 
 export class NodeProjectScaffolder implements ProjectScaffolder {
   constructor(private readonly terminal: Terminal) {}
@@ -15,7 +12,13 @@ export class NodeProjectScaffolder implements ProjectScaffolder {
   }): Promise<void> {
     await mkdir(input.projectPath);
 
-    const templates = resolve(currentDir, '..', '..', 'templates', 'files');
+    const templates = resolve(
+      __dirname,
+      '..',
+      'src',
+      'templates',
+      'files',
+    );
 
     await cp(templates, input.projectPath, {
       recursive: true,
