@@ -56,8 +56,6 @@ export class TerminalAdapter implements Terminal {
         '\n\n🚀 Commands after installing dependencies:\n  ' +
         this.formatCommand(run, 'dev', 'Run Electron in development') +
         '\n  ' +
-        this.formatCommand(run, 'build', 'Build the application') +
-        '\n  ' +
         this.formatCommand(run, 'package', 'Package the application') +
         '\n  ' +
         this.formatCommand(run, 'type', 'Check TypeScript types') +
