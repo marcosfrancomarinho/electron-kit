@@ -76,8 +76,8 @@ async function main() {
     watch(resolve(projectRoot, 'main.ts'), schedule),
     watch(resolve(projectRoot, 'browser'), { recursive: true }, schedule),
     watch(resolve(projectRoot, 'provider'), { recursive: true }, schedule),
-    watch(resolve(projectRoot, 'index.html'), schedule),
-    watch(resolve(projectRoot, 'style.css'), schedule),
+    watch(resolve(projectRoot, 'browser', 'index.html'), schedule),
+    watch(resolve(projectRoot, 'browser', 'style.css'), schedule),
     watch(resolve(projectRoot, 'electron-kit', 'runtime'), { recursive: true }, schedule),
     watch(resolve(projectRoot, 'electron-kit', 'bridge'), { recursive: true }, schedule),
   ];
