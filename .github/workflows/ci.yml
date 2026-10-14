@@ -77,6 +77,10 @@ jobs:
         working-directory: fixture
         run: npm run package -- ${{ matrix.target }}
 
+      - name: Verify compiled Tailwind CSS
+        working-directory: fixture
+        run: node -e "const css = require('node:fs').readFileSync('kit_electron/cache/style.css', 'utf8'); if (!css.includes('.bg-zinc-950')) process.exit(1);"
+
       - name: Upload package
         uses: actions/upload-artifact@v4
         with:

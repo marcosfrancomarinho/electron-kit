@@ -4,6 +4,7 @@ const { existsSync } = require('node:fs');
 const { dirname, resolve } = require('node:path');
 const { build: esbuild } = require('esbuild');
 const { build, Platform } = require('electron-builder');
+const { compileStyles } = require('./styles.cjs');
 
 const projectRoot = resolve(__dirname, '..', '..');
 const cache = resolve(projectRoot, 'kit_electron', 'cache');
@@ -84,20 +85,7 @@ async function compile() {
       target: 'es2022',
     }),
   ]);
-  buildStyles();
-}
-
-function buildStyles() {
-  const cli = resolve(projectRoot, 'node_modules', '@tailwindcss', 'cli', 'dist', 'index.mjs');
-  const result = spawnSync(process.execPath, [
-    cli,
-    '--input', 'src/ui/style.css',
-    '--output', 'kit_electron/cache/style.css',
-    '--minify',
-  ], { cwd: projectRoot, stdio: 'inherit' });
-
-  if (result.error) throw result.error;
-  if (result.status !== 0) throw new Error('Tailwind CSS compilation failed.');
+  compileStyles(true);
 }
 
 function currentPlatform() {
