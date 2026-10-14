@@ -92,7 +92,6 @@ npm run package -- mac
 
 Installers are written to `release/`. Development generates temporary files in `kit_electron/cache/`, which Git ignores.
 
-**There is no separate `type` command.** Both `dev` and `package` type-check before compiling.
 
 ## Security
 

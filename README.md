@@ -92,7 +92,6 @@ npm run package -- mac
 
 O resultado fica em `release/`. O desenvolvimento cria uma pasta temporária `kit_electron/cache/`, ignorada pelo Git.
 
-**Não há comando `type` separado:** tanto `dev` quanto `package` executam a verificação TypeScript antes de compilar.
 
 ## Segurança
 
