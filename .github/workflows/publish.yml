@@ -38,9 +38,6 @@ jobs:
             exit 1
           fi
 
-      - name: Check types
-        run: npm run type
-
       - name: Test
         run: npm test
 

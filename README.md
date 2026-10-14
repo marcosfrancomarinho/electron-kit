@@ -1,89 +1,86 @@
 # Create Kit Electron
 
-Minimal Electron + React + TypeScript project generator.
+Crie aplicativos desktop com **Electron + React + TypeScript + Tailwind CSS**, sem configurar toda a infraestrutura do zero.
 
-## Create
+O Kit Electron gera uma base enxuta, com comunicação tipada entre a interface e o Node.js. **Não impõe arquitetura** ao seu código.
+
+## Começar
+
+Requer Node.js 22 ou superior.
 
 ```bash
 npx create-kit-electron
 ```
 
-Also works with:
+Informe o nome do projeto e execute:
 
 ```bash
-npm create kit-electron
-yarn create kit-electron
-pnpm create kit-electron
-```
-
-The CLI asks only for the project name.
-
-Dependencies are not installed automatically.
-
-```bash
-cd my-app
+cd meu-app
 npm install
 npm run dev
 ```
 
-## Structure
+O nome da pasta depende do nome informado na criação. A CLI não instala dependências automaticamente.
+
+## Estrutura gerada
 
 ```text
-my-app/
-├── kit_electron/
+meu-app/
 ├── src/
-│   ├── ui/
-│   └── system/
-├── main.ts
-├── global.d.ts
+│   ├── ui/                  # React, HTML e estilos
+│   │   ├── App.tsx
+│   │   ├── main.tsx
+│   │   ├── index.html
+│   │   └── style.css
+│   └── system/              # Electron, Node.js e providers
+│       ├── main.ts
+│       └── providers.ts
+├── kit_electron/            # Infraestrutura da ferramenta
+│   ├── build/
+│   │   ├── dev.cjs
+│   │   └── package.cjs
+│   └── runtime/
+│       ├── browser.ts
+│       ├── node.ts
+│       ├── preload.ts
+│       └── shared.ts
 ├── package.json
 ├── tsconfig.json
 └── README.md
 ```
 
-Contexts:
+**`src/` é sua aplicação.** Use `src/ui` para a interface e `src/system` para funcionalidades que precisam do Electron ou do Node.js. A pasta `kit_electron/` contém os arquivos internos de compilação e comunicação.
 
-```text
-src/ui/        interface
-src/system/    Node/system providers
-main.ts        Electron window entry
-kit_electron/  internal runtime and build tools
-```
+## Providers
 
-## Structure
-
-
-The starter exposes only the Electron version:
+Registre funções disponíveis para o React em `src/system/providers.ts`:
 
 ```ts
-export const functions = {
-  version() {
-    return process.versions.electron;
-  },
-};
-```
+import { providers } from '../../kit_electron/runtime/node.js';
 
-```ts
 export default providers
-  .register('version', functions.version);
+  .register('version', () => process.versions.electron);
 ```
 
-UI usage:
+Use na interface:
 
 ```ts
-const version = browser.get('version');
-const value = await version();
+import { browser } from '../../kit_electron/runtime/browser.js';
+
+const version = await browser.get('version')();
+console.log(version);
 ```
 
-## Commands
+Os providers executam no processo principal do Electron. O React os acessa pela ponte tipada baseada em IPC, sem acesso direto ao Node.js.
 
-```bash
-npm run dev
-npm run type
-npm run package
-```
+## Comandos
 
-Package for a specific platform:
+| Comando | O que faz |
+| --- | --- |
+| `npm run dev` | Verifica os tipos, inicia o Electron e acompanha alterações |
+| `npm run package` | Verifica os tipos, compila e gera o instalador para o sistema atual |
+
+Para selecionar a plataforma:
 
 ```bash
 npm run package -- win
@@ -91,15 +88,27 @@ npm run package -- linux
 npm run package -- mac
 ```
 
-Outputs are written to `release/`.
+O resultado fica em `release/`. O desenvolvimento cria uma pasta temporária `kit_electron/cache/`, ignorada pelo Git.
 
-## Security
+**Não há comando `type` separado:** tanto `dev` quanto `package` executam a verificação TypeScript antes de compilar.
 
-Generated windows use:
+## Segurança
 
-```text
-contextIsolation: true
-nodeIntegration: false
+As janelas geradas utilizam `contextIsolation: true` e `nodeIntegration: false`. Apenas as funcionalidades registradas como providers ficam disponíveis para a interface.
+
+---
+
+## English
+
+**Create Kit Electron** is a minimal starter generator for Electron, React, TypeScript and Tailwind CSS. It keeps your app in `src/ui` (React) and `src/system` (Electron/Node.js), with internal tooling under `kit_electron/`. No application architecture is enforced.
+
+```bash
+npx create-kit-electron
+cd my-app
+npm install
+npm run dev
 ```
 
-System access goes through the typed Create Kit Electron provider bridge.
+Use `npm run dev` to develop and `npm run package` to build installers. Both commands check TypeScript automatically. Packaging targets: `win`, `linux`, `mac`. Installers are written to `release/`.
+
+Register functions in `src/system/providers.ts` with `providers.register(token, fn)`; invoke them in React with `browser.get(token)(...args)`. The bridge uses IPC with context isolation enabled.

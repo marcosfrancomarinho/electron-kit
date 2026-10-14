@@ -67,18 +67,15 @@ async function packageJson(project) {
 
 function commonFiles(project) {
   return [
-    'main.ts',
-    'global.d.ts',
+    'src/system/main.ts',
     'src/ui/index.html',
     'src/ui/style.css',
     'src/ui/main.tsx',
     'src/ui/App.tsx',
-    'src/system/functions.ts',
-    'src/system/provider.ts',
+    'src/system/providers.ts',
     'kit_electron/build/dev.cjs',
     'kit_electron/build/package.cjs',
-    'kit_electron/build/type.cjs',
-    'kit_electron/bridge/preload.ts',
+    'kit_electron/runtime/preload.ts',
     'kit_electron/runtime/node.ts',
     'kit_electron/runtime/browser.ts',
     'kit_electron/runtime/shared.ts',
@@ -95,6 +92,16 @@ describe('create-kit-electron', () => {
     }
 
     assert.equal(existsSync(join(project, 'src/ui/main.ts')), false);
+    for (const oldFile of [
+      'main.ts',
+      'global.d.ts',
+      'src/system/functions.ts',
+      'src/system/provider.ts',
+      'kit_electron/bridge/preload.ts',
+      'kit_electron/build/type.cjs',
+    ]) {
+      assert.equal(existsSync(join(project, oldFile)), false, oldFile);
+    }
     assert.equal(existsSync(join(project, 'node_modules')), false);
     assert.equal(existsSync(join(project, 'dist')), false);
     assert.equal(existsSync(join(project, 'release')), false);
@@ -104,7 +111,6 @@ describe('create-kit-electron', () => {
     assert.deepEqual(Object.keys(pkg.scripts).sort(), [
       'dev',
       'package',
-      'type',
     ]);
     assert.equal(pkg.dependencies.react.startsWith('^19'), true);
     assert.equal(pkg.dependencies['react-dom'].startsWith('^19'), true);
@@ -122,6 +128,27 @@ describe('create-kit-electron', () => {
     assert.equal(existsSync(join(project, 'ui')), false);
     assert.equal(existsSync(join(project, 'system')), false);
   });
+  it('checks types in dev and package without a separate command', async () => {
+    const { project } = await generate();
+    const dev = await readFile(join(project, 'kit_electron/build/dev.cjs'), 'utf8');
+    const pack = await readFile(join(project, 'kit_electron/build/package.cjs'), 'utf8');
+    const browser = await readFile(join(project, 'kit_electron/runtime/browser.ts'), 'utf8');
+    const providers = await readFile(join(project, 'src/system/providers.ts'), 'utf8');
+    const main = await readFile(join(project, 'src/system/main.ts'), 'utf8');
+
+    for (const script of [dev, pack]) {
+      assert.equal(script.includes('checkTypes();'), true);
+      assert.equal(script.includes("entryPoints: ['src/system/main.ts']"), true);
+      assert.equal(script.includes("entryPoints: ['kit_electron/runtime/preload.ts']"), true);
+    }
+
+    assert.equal(browser.includes('../../src/system/providers.js'), true);
+    assert.equal(main.includes("import './providers.js'"), true);
+    assert.equal(providers.includes(".register('version'"), true);
+    assert.equal(dev.includes("watch(resolve(projectRoot, 'main.ts')"), false);
+    assert.equal(dev.includes("'bridge'"), false);
+  });
+
   it('reloads UI changes without restarting Electron', async () => {
     const { project } = await generate();
     const dev = await readFile(
@@ -132,7 +159,7 @@ describe('create-kit-electron', () => {
       join(project, 'kit_electron/runtime/node.ts'),
       'utf8',
     );
-    const main = await readFile(join(project, 'main.ts'), 'utf8');
+    const main = await readFile(join(project, 'src/system/main.ts'), 'utf8');
 
     const rendererStart = dev.indexOf('async function rebuildRenderer()');
     const rendererEnd = dev.indexOf('async function stopElectron()');

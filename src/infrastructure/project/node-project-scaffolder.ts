@@ -77,7 +77,6 @@ export class NodeProjectScaffolder implements ProjectScaffolder {
         scripts: {
           dev: 'node kit_electron/build/dev.cjs',
           package: 'node kit_electron/build/package.cjs',
-          type: 'node kit_electron/build/type.cjs',
         },
         dependencies: {
           react: '^19.0.0',

@@ -56,7 +56,7 @@ async function compile() {
   await Promise.all([
     esbuild({
       absWorkingDir: projectRoot,
-      entryPoints: ['main.ts'],
+      entryPoints: ['src/system/main.ts'],
       outfile: resolve(cache, 'bundle.cjs'),
       bundle: true,
       platform: 'node',
@@ -66,7 +66,7 @@ async function compile() {
     }),
     esbuild({
       absWorkingDir: projectRoot,
-      entryPoints: ['kit_electron/bridge/preload.ts'],
+      entryPoints: ['kit_electron/runtime/preload.ts'],
       outfile: resolve(cache, 'preload.cjs'),
       bundle: true,
       platform: 'node',

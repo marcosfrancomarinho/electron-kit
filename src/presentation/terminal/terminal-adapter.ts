@@ -154,8 +154,6 @@ export class TerminalAdapter implements Terminal {
         '\n\n🚀 Commands:\n  ' +
         this.formatCommand(run, 'dev', 'Run Electron in development') +
         '\n  ' +
-        this.formatCommand(run, 'type', 'Check TypeScript types') +
-        '\n  ' +
         this.formatCommand(run, 'package', 'Package for the current OS') +
         '\n\n📦 Package targets:\n  ' +
         this.palette.paint(this.palette.yellow, `${packageCommand} win`) +

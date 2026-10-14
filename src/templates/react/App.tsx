@@ -37,7 +37,7 @@ export function App() {
         <div className="mt-8 flex flex-col items-center gap-3 sm:flex-row">
           <div className="flex h-11 items-center gap-3 rounded-xl border border-white/10 bg-zinc-900/80 px-4 font-mono text-sm text-zinc-300 backdrop-blur">
             <span className="text-emerald-500">$</span>
-            yarn dev
+            npm run dev
           </div>
 
           <div className="flex h-11 items-center gap-2 rounded-xl border border-white/10 bg-zinc-900/80 px-4 text-xs text-zinc-500 backdrop-blur">

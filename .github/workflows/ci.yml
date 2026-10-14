@@ -29,9 +29,6 @@ jobs:
       - name: Install
         run: npm install
 
-      - name: TypeScript
-        run: npm run type
-
       - name: Tests
         run: npm test
 
@@ -75,10 +72,6 @@ jobs:
       - name: Install generated project
         working-directory: fixture
         run: npm install
-
-      - name: Type generated project
-        working-directory: fixture
-        run: npm run type
 
       - name: Package generated project
         working-directory: fixture

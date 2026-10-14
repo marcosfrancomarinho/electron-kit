@@ -15,10 +15,8 @@
     "jsx": "react-jsx"
   },
   "include": [
-    "main.ts",
     "src/**/*.ts",
     "src/**/*.tsx",
-    "global.d.ts",
     "kit_electron/**/*.ts"
   ]
 }

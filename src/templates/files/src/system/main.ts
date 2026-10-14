@@ -3,8 +3,8 @@ import { join } from 'node:path';
 import {
   preloadPath,
   reloadRendererOnChange,
-} from './kit_electron/runtime/node.js';
-import './src/system/provider.js';
+} from '../../kit_electron/runtime/node.js';
+import './providers.js';
 
 async function createWindow() {
   const window = new BrowserWindow({

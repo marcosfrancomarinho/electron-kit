@@ -70,7 +70,7 @@ async function compileAll() {
   await Promise.all([
     build({
       absWorkingDir: projectRoot,
-      entryPoints: ['main.ts'],
+      entryPoints: ['src/system/main.ts'],
       outfile: resolve(cache, 'bundle.cjs'),
       bundle: true,
       platform: 'node',
@@ -80,7 +80,7 @@ async function compileAll() {
     }),
     build({
       absWorkingDir: projectRoot,
-      entryPoints: ['kit_electron/bridge/preload.ts'],
+      entryPoints: ['kit_electron/runtime/preload.ts'],
       outfile: resolve(cache, 'preload.cjs'),
       bundle: true,
       platform: 'node',
@@ -180,9 +180,7 @@ async function main() {
   const watchers = [
     watch(resolve(projectRoot, 'src', 'ui'), { recursive: true }, () => schedule('ui')),
     watch(resolve(projectRoot, 'src', 'system'), { recursive: true }, () => schedule('main')),
-    watch(resolve(projectRoot, 'main.ts'), () => schedule('main')),
     watch(resolve(projectRoot, 'kit_electron', 'runtime'), { recursive: true }, () => schedule('main')),
-    watch(resolve(projectRoot, 'kit_electron', 'bridge'), { recursive: true }, () => schedule('main')),
   ];
 
   const close = async () => {
