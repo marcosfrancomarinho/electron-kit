@@ -22,7 +22,7 @@ npm install
 npm run dev
 ```
 
-O nome da pasta depende do nome informado na criação. A CLI não instala dependências automaticamente.
+O nome da pasta depende do nome informado na criação. A CLI não instala dependências automaticamente. **Os projetos gerados recebem apenas um `README.md` em inglês; esta documentação do repositório está disponível em português e inglês.**
 
 ## Estrutura gerada
 
@@ -48,8 +48,7 @@ meu-app/
 ├── index.html
 ├── package.json
 ├── tsconfig.json
-├── README.md
-└── README.en.md
+└── README.md
 ```
 
 **`src/` é sua aplicação.** Use `src/ui` para a interface e `src/system` para funcionalidades que precisam do Electron ou do Node.js. A pasta `kit_electron/` contém os arquivos internos de compilação e comunicação.

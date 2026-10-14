@@ -22,7 +22,7 @@ npm install
 npm run dev
 ```
 
-Replace `my-app` with the name you entered. The CLI does not install dependencies automatically.
+Replace `my-app` with the name you entered. The CLI does not install dependencies automatically. **Generated projects contain only an English `README.md`; this repository provides documentation in both Portuguese and English.**
 
 ## Generated structure
 
@@ -48,8 +48,7 @@ my-app/
 ├── index.html
 ├── package.json
 ├── tsconfig.json
-├── README.md
-└── README.en.md
+└── README.md
 ```
 
 **`src/` contains your application.** Put the React interface in `src/ui/`, and Node.js or Electron functionality in `src/system/`. The `kit_electron/` directory contains build tools and the runtime communication layer.

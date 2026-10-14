@@ -81,7 +81,6 @@ function commonFiles(project) {
     'kit_electron/runtime/shared.ts',
     'tsconfig.json',
     'README.md',
-    'README.en.md',
   ].map((path) => join(project, path));
 }
 
@@ -122,17 +121,19 @@ describe('create-kit-electron', () => {
     assert.equal(pkg.main, 'kit_electron/cache/bundle.cjs');
   });
 
-  it('generates separate Portuguese and English READMEs', async () => {
+  it('generates only the English README and keeps both languages in the repository', async () => {
     const { project } = await generate();
-    const portuguese = await readFile(join(project, 'README.md'), 'utf8');
-    const english = await readFile(join(project, 'README.en.md'), 'utf8');
+    const generated = await readFile(join(project, 'README.md'), 'utf8');
+    const portuguese = await readFile(join(repository, 'README.md'), 'utf8');
+    const english = await readFile(join(repository, 'README.en.md'), 'utf8');
 
+    assert.equal(existsSync(join(project, 'README.en.md')), false);
+    assert.equal(generated.includes('## Get started'), true);
+    assert.equal(generated.includes('## Começar'), false);
+    assert.equal(generated.includes('npm run dev'), true);
+    assert.equal(generated.includes('npm run package'), true);
     assert.equal(portuguese.includes('[English](README.en.md)'), true);
     assert.equal(english.includes('[Português (Brasil)](README.md)'), true);
-    assert.equal(portuguese.includes('## Começar'), true);
-    assert.equal(english.includes('## Get started'), true);
-    assert.equal(portuguese.includes('npm run dev'), true);
-    assert.equal(english.includes('npm run package'), true);
   });
 
   it('keeps application code under src', async () => {

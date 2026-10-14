@@ -1,17 +1,15 @@
 # Kit Electron App
 
-**Idioma:** Português (Brasil) · [English](README.en.md)
+Generated with [Create Kit Electron](https://github.com/marcosfrancomarinho/electron-kit): Electron + React + TypeScript + Tailwind CSS.
 
-Projeto gerado com [Create Kit Electron](https://github.com/marcosfrancomarinho/electron-kit): Electron + React + TypeScript + Tailwind CSS.
-
-## Começar
+## Get started
 
 ```bash
 npm install
 npm run dev
 ```
 
-## Pastas
+## Project structure
 
 ```text
 src/
@@ -36,14 +34,14 @@ kit_electron/
 index.html               # HTML entry point
 ```
 
-- **`src/ui/`**: interface React, HTML e estilos.
-- **`src/system/main.ts`**: inicialização da janela Electron.
-- **`src/system/providers.ts`**: funções Node.js disponibilizadas para a interface.
-- **`kit_electron/`**: scripts de compilação e ponte de comunicação; normalmente não precisa de alterações.
+- **`src/ui/`**: React interface, HTML, and styles.
+- **`src/system/main.ts`**: Electron window entry point.
+- **`src/system/providers.ts`**: Node.js functions exposed to the interface.
+- **`kit_electron/`**: internal build scripts and typed IPC runtime; normally no changes needed.
 
-## Comunicação entre os processos
+## Communicating between processes
 
-Em `src/system/providers.ts`:
+Register a function in `src/system/providers.ts`:
 
 ```ts
 import { providers } from '../../kit_electron/runtime/node.js';
@@ -52,7 +50,7 @@ export default providers
   .register('version', () => process.versions.electron);
 ```
 
-Na interface React:
+Use it from React:
 
 ```ts
 import { browser } from '../../kit_electron/runtime/browser.js';
@@ -60,20 +58,20 @@ import { browser } from '../../kit_electron/runtime/browser.js';
 const version = await browser.get('version')();
 ```
 
-Os providers executam no processo principal do Electron. O React acessa apenas as funções registradas, pela ponte IPC.
+Providers execute in the Electron main process. The React interface accesses registered functions through the typed IPC bridge.
 
-## Comandos
+## Commands
 
 ```bash
-npm run dev                # Tipos + desenvolvimento com atualização automática
-npm run package            # Tipos + instalador para o sistema atual
+npm run dev                # Type-check and run with automatic refresh
+npm run package            # Type-check and package for the current OS
 npm run package -- win     # Windows (NSIS)
-npm run package -- linux   # Linux (AppImage e .deb)
+npm run package -- linux   # Linux (AppImage and .deb)
 npm run package -- mac     # macOS (.dmg)
 ```
 
-Não existe `npm run type`: a verificação TypeScript já faz parte de `dev` e `package`. Os instaladores vão para `release/`.
+There is no `npm run type` command. TypeScript checking is built into `dev` and `package`. Installers are generated in `release/`.
 
-## Segurança
+## Security
 
-A janela usa `contextIsolation: true` e `nodeIntegration: false`. Evite expor operações não confiáveis nos providers.
+The window uses `contextIsolation: true` and `nodeIntegration: false`. Avoid exposing unsafe operations through providers.
