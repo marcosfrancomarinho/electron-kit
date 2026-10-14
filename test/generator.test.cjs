@@ -124,16 +124,17 @@ describe('create-kit-electron', () => {
   it('generates only the English README and keeps both languages in the repository', async () => {
     const { project } = await generate();
     const generated = await readFile(join(project, 'README.md'), 'utf8');
-    const portuguese = await readFile(join(repository, 'README.md'), 'utf8');
-    const english = await readFile(join(repository, 'README.en.md'), 'utf8');
+    const portuguese = await readFile(join(repository, 'README.pt-BR.md'), 'utf8');
+    const english = await readFile(join(repository, 'README.md'), 'utf8');
 
     assert.equal(existsSync(join(project, 'README.en.md')), false);
+    assert.equal(existsSync(join(project, 'README.pt-BR.md')), false);
     assert.equal(generated.includes('## Get started'), true);
     assert.equal(generated.includes('## Começar'), false);
     assert.equal(generated.includes('npm run dev'), true);
     assert.equal(generated.includes('npm run package'), true);
-    assert.equal(portuguese.includes('[English](README.en.md)'), true);
-    assert.equal(english.includes('[Português (Brasil)](README.md)'), true);
+    assert.equal(english.includes('[Português (Brasil)](README.pt-BR.md)'), true);
+    assert.equal(portuguese.includes('[English](README.md)'), true);
   });
 
   it('keeps application code under src', async () => {
