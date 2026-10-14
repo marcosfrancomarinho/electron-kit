@@ -2,7 +2,9 @@ import { ipcMain } from 'electron';
 import { watch } from 'node:fs';
 import { join } from 'node:path';
 import type { BrowserWindow } from 'electron';
-import type { ProviderMap, ProviderValue } from './shared.js';
+export type ProviderFunction = (...args: any[]) => unknown;
+export type ProviderValue = ProviderFunction | Record<string, ProviderFunction>;
+export type ProviderMap = Record<string, ProviderValue>;
 
 const channel = 'create-kit-electron:invoke';
 const registry = new Map<string, ProviderValue>();

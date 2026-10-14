@@ -1,19 +1,11 @@
 const { spawnSync } = require('node:child_process');
 const { mkdir, rm } = require('node:fs/promises');
-const { existsSync } = require('node:fs');
 const { dirname, resolve } = require('node:path');
 const { build: esbuild } = require('esbuild');
 const { build, Platform } = require('electron-builder');
-const { compileStyles } = require('./styles.cjs');
 
 const projectRoot = resolve(__dirname, '..', '..');
 const cache = resolve(projectRoot, 'kit_electron', 'cache');
-
-const uiEntry = existsSync(
-  resolve(projectRoot, 'src', 'ui', 'main.tsx'),
-)
-  ? 'src/ui/main.tsx'
-  : 'src/ui/main.ts';
 
 function compilerPath() {
   const packagePath = require.resolve('typescript/package.json', {
@@ -77,7 +69,7 @@ async function compile() {
     }),
     esbuild({
       absWorkingDir: projectRoot,
-      entryPoints: [uiEntry],
+      entryPoints: ['src/ui/main.tsx'],
       outfile: resolve(cache, 'browser.js'),
       bundle: true,
       platform: 'browser',
@@ -85,7 +77,6 @@ async function compile() {
       target: 'es2022',
     }),
   ]);
-  compileStyles(true);
 }
 
 function currentPlatform() {
@@ -137,7 +128,7 @@ async function packageProject() {
         'kit_electron/cache/browser.js',
         'kit_electron/cache/preload.cjs',
         'index.html',
-        'kit_electron/cache/style.css',
+        'src/ui/style.css',
         'package.json',
       ],
       win: {

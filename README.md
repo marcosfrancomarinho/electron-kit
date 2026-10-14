@@ -2,7 +2,7 @@
 
 **Language:** English · [Português (Brasil)](README.pt-BR.md)
 
-Build desktop apps with **Electron + React + TypeScript + Tailwind CSS**, without configuring the project infrastructure from scratch.
+Build desktop apps with **Electron + React + TypeScript + CSS**, without configuring the project infrastructure from scratch.
 
 Create Kit Electron generates a minimal starter with a typed bridge between React and Node.js. **It does not enforce an application architecture.**
 
@@ -29,7 +29,7 @@ Replace `my-app` with the name you entered. The CLI does not install dependencie
 ```text
 my-app/
 ├── src/
-│   ├── ui/                  # React, HTML, styles
+│   ├── ui/                  # React and CSS
 │   │   ├── App.tsx
 │   │   ├── main.tsx
 │   │   └── style.css
@@ -43,8 +43,7 @@ my-app/
 │   └── runtime/
 │       ├── browser.ts
 │       ├── node.ts
-│       ├── preload.ts
-│       └── shared.ts
+│       └── preload.ts
 ├── index.html
 ├── package.json
 ├── tsconfig.json

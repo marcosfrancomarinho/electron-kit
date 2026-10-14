@@ -1,6 +1,6 @@
 # Kit Electron App
 
-Generated with [Create Kit Electron](https://github.com/marcosfrancomarinho/electron-kit): Electron + React + TypeScript + Tailwind CSS.
+Generated with [Create Kit Electron](https://github.com/marcosfrancomarinho/electron-kit): Electron + React + TypeScript + CSS.
 
 ## Get started
 
@@ -28,13 +28,12 @@ kit_electron/
 └── runtime/
     ├── browser.ts
     ├── node.ts
-    ├── preload.ts
-    └── shared.ts
+    └── preload.ts
 
 index.html               # HTML entry point
 ```
 
-- **`src/ui/`**: React interface, HTML, and styles.
+- **`src/ui/`**: React interface and CSS.
 - **`src/system/main.ts`**: Electron window entry point.
 - **`src/system/providers.ts`**: Node.js functions exposed to the interface.
 - **`kit_electron/`**: internal build scripts and typed IPC runtime; normally no changes needed.
@@ -70,7 +69,7 @@ npm run package -- linux   # Linux (AppImage and .deb)
 npm run package -- mac     # macOS (.dmg)
 ```
 
-There is no `npm run type` command. TypeScript checking is built into `dev` and `package`. Installers are generated in `release/`.
+Installers are generated in `release/`. TypeScript is checked by both commands.
 
 ## Security
 

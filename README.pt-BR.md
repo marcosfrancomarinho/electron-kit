@@ -2,7 +2,7 @@
 
 **Idioma:** Português (Brasil) · [English](README.md)
 
-Crie aplicativos desktop com **Electron + React + TypeScript + Tailwind CSS**, sem configurar toda a infraestrutura do zero.
+Crie aplicativos desktop com **Electron + React + TypeScript + CSS**, sem configurar toda a infraestrutura do zero.
 
 O Kit Electron gera uma base enxuta, com comunicação tipada entre a interface e o Node.js. **Não impõe arquitetura** ao seu código.
 
@@ -29,7 +29,7 @@ O nome da pasta depende do nome informado na criação. A CLI não instala depen
 ```text
 meu-app/
 ├── src/
-│   ├── ui/                  # React, HTML e estilos
+│   ├── ui/                  # React e CSS
 │   │   ├── App.tsx
 │   │   ├── main.tsx
 │   │   └── style.css
@@ -43,8 +43,7 @@ meu-app/
 │   └── runtime/
 │       ├── browser.ts
 │       ├── node.ts
-│       ├── preload.ts
-│       └── shared.ts
+│       └── preload.ts
 ├── index.html
 ├── package.json
 ├── tsconfig.json

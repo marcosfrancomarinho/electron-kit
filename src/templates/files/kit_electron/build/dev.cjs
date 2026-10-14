@@ -1,16 +1,12 @@
 const { spawn, spawnSync } = require('node:child_process');
 const { mkdir, rm, writeFile } = require('node:fs/promises');
-const { existsSync, watch } = require('node:fs');
+const { watch } = require('node:fs');
 const { dirname, resolve } = require('node:path');
 const { build } = require('esbuild');
 const electron = require('electron');
-const { compileStyles } = require('./styles.cjs');
 
 const projectRoot = resolve(__dirname, '..', '..');
 const cache = resolve(projectRoot, 'kit_electron', 'cache');
-const uiEntry = existsSync(resolve(projectRoot, 'src', 'ui', 'main.tsx'))
-  ? 'src/ui/main.tsx'
-  : 'src/ui/main.ts';
 const reloadSignal = resolve(cache, 'reload');
 
 let child;
@@ -53,14 +49,13 @@ function checkTypes() {
 async function buildRenderer() {
   await build({
     absWorkingDir: projectRoot,
-    entryPoints: [uiEntry],
+    entryPoints: ['src/ui/main.tsx'],
     outfile: resolve(cache, 'browser.js'),
     bundle: true,
     platform: 'browser',
     format: 'iife',
     target: 'es2022',
   });
-  compileStyles();
 }
 
 async function compileAll() {

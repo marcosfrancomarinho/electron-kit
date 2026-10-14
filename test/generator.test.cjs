@@ -75,11 +75,9 @@ function commonFiles(project) {
     'src/system/providers.ts',
     'kit_electron/build/dev.cjs',
     'kit_electron/build/package.cjs',
-    'kit_electron/build/styles.cjs',
     'kit_electron/runtime/preload.ts',
     'kit_electron/runtime/node.ts',
     'kit_electron/runtime/browser.ts',
-    'kit_electron/runtime/shared.ts',
     'tsconfig.json',
     'README.md',
   ].map((path) => join(project, path));
@@ -102,6 +100,8 @@ describe('create-kit-electron', () => {
       'src/system/provider.ts',
       'kit_electron/bridge/preload.ts',
       'kit_electron/build/type.cjs',
+      'kit_electron/build/styles.cjs',
+      'kit_electron/runtime/shared.ts',
     ]) {
       assert.equal(existsSync(join(project, oldFile)), false, oldFile);
     }
@@ -120,6 +120,8 @@ describe('create-kit-electron', () => {
     assert.equal(pkg.devDependencies['@types/react'].startsWith('^19'), true);
     assert.equal(pkg.devDependencies['@types/react-dom'].startsWith('^19'), true);
     assert.equal(pkg.main, 'kit_electron/cache/bundle.cjs');
+    assert.equal(pkg.devDependencies.tailwindcss, undefined);
+    assert.equal(pkg.devDependencies['@tailwindcss/cli'], undefined);
   });
 
   it('generates only the English README and keeps both languages in the repository', async () => {
@@ -151,7 +153,8 @@ describe('create-kit-electron', () => {
     const { project } = await generate();
     const dev = await readFile(join(project, 'kit_electron/build/dev.cjs'), 'utf8');
     const pack = await readFile(join(project, 'kit_electron/build/package.cjs'), 'utf8');
-    const styles = await readFile(join(project, 'kit_electron/build/styles.cjs'), 'utf8');
+    const css = await readFile(join(project, 'src/ui/style.css'), 'utf8');
+    const nodeRuntime = await readFile(join(project, 'kit_electron/runtime/node.ts'), 'utf8');
     const browser = await readFile(join(project, 'kit_electron/runtime/browser.ts'), 'utf8');
     const providers = await readFile(join(project, 'src/system/providers.ts'), 'utf8');
     const main = await readFile(join(project, 'src/system/main.ts'), 'utf8');
@@ -167,16 +170,17 @@ describe('create-kit-electron', () => {
     assert.equal(main.includes("join(__dirname, '..', '..', 'index.html')"), true);
     const html = await readFile(join(project, 'index.html'), 'utf8');
     assert.equal(html.includes('./kit_electron/cache/browser.js'), true);
-    assert.equal(html.includes('./kit_electron/cache/style.css'), true);
+    assert.equal(html.includes('./src/ui/style.css'), true);
+    assert.equal(css.includes('.app {'), true);
+    assert.equal(css.includes('tailwindcss'), false);
     assert.equal(dev.includes("watch(resolve(projectRoot, 'index.html')"), true);
-    assert.equal(dev.includes("compileStyles();"), true);
-    assert.equal(pack.includes("compileStyles(true);"), true);
-    assert.equal(styles.includes("require.resolve('@tailwindcss/cli/package.json'"), true);
-    assert.equal(styles.includes("bin?.tailwindcss"), true);
-    assert.equal(styles.includes("if (minify) args.push('--minify')"), true);
-    assert.equal(dev.includes("dist', 'index.mjs'"), false);
-    assert.equal(pack.includes("dist', 'index.mjs'"), false);
-    assert.equal(pack.includes("'kit_electron/cache/style.css'"), true);
+    assert.equal(dev.includes("entryPoints: ['src/ui/main.tsx']"), true);
+    assert.equal(pack.includes("entryPoints: ['src/ui/main.tsx']"), true);
+    assert.equal(dev.includes('compileStyles'), false);
+    assert.equal(pack.includes('compileStyles'), false);
+    assert.equal(pack.includes("'src/ui/style.css'"), true);
+    assert.equal(browser.includes("from './shared.js'"), false);
+    assert.equal(nodeRuntime.includes("from './shared.js'"), false);
     assert.equal(providers.includes(".register('version'"), true);
     assert.equal(dev.includes("watch(resolve(projectRoot, 'main.ts')"), false);
     assert.equal(dev.includes("'bridge'"), false);

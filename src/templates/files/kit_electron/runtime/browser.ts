@@ -1,6 +1,11 @@
 import type registry from '../../src/system/providers.js';
 import type { ProviderRegistry } from './node.js';
-import type { Remote } from './shared.js';
+export type Remote<T> =
+  T extends (...args: infer Args) => infer Result
+    ? (...args: Args) => Promise<Awaited<Result>>
+    : T extends Record<string, unknown>
+      ? { [Key in keyof T]: Remote<T[Key]> }
+      : never;
 
 type RegisteredProviders = ProviderRegistry<typeof registry>;
 

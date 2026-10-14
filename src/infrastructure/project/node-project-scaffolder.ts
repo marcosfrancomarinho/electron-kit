@@ -71,7 +71,6 @@ export class NodeProjectScaffolder implements ProjectScaffolder {
         name: projectName,
         version: '1.0.0',
         private: true,
-        homepage: 'https://github.com/marcosfrancomarinho/electron-kit',
         type: 'module',
         main: 'kit_electron/cache/bundle.cjs',
         scripts: {
@@ -86,8 +85,6 @@ export class NodeProjectScaffolder implements ProjectScaffolder {
           '@types/node': '^22.0.0',
           '@types/react': '^19.0.0',
           '@types/react-dom': '^19.0.0',
-          '@tailwindcss/cli': '^4.1.0',
-          tailwindcss: '^4.1.0',
           electron: '^44.5.1',
           'electron-builder': '^26.15.3',
           esbuild: '^0.28.2',
