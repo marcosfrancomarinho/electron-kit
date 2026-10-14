@@ -32,7 +32,6 @@ meu-app/
 │   ├── ui/                  # React, HTML e estilos
 │   │   ├── App.tsx
 │   │   ├── main.tsx
-│   │   ├── index.html
 │   │   └── style.css
 │   └── system/              # Electron, Node.js e providers
 │       ├── main.ts
@@ -46,6 +45,7 @@ meu-app/
 │       ├── node.ts
 │       ├── preload.ts
 │       └── shared.ts
+├── index.html
 ├── package.json
 ├── tsconfig.json
 ├── README.md

@@ -32,7 +32,6 @@ my-app/
 │   ├── ui/                  # React, HTML, styles
 │   │   ├── App.tsx
 │   │   ├── main.tsx
-│   │   ├── index.html
 │   │   └── style.css
 │   └── system/              # Electron, Node.js, providers
 │       ├── main.ts
@@ -46,6 +45,7 @@ my-app/
 │       ├── node.ts
 │       ├── preload.ts
 │       └── shared.ts
+├── index.html
 ├── package.json
 ├── tsconfig.json
 ├── README.md

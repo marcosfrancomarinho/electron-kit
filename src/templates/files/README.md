@@ -18,7 +18,6 @@ src/
 ├── ui/
 │   ├── App.tsx
 │   ├── main.tsx
-│   ├── index.html
 │   └── style.css
 └── system/
     ├── main.ts
@@ -33,6 +32,8 @@ kit_electron/
     ├── node.ts
     ├── preload.ts
     └── shared.ts
+
+index.html               # HTML entry point
 ```
 
 - **`src/ui/`**: interface React, HTML e estilos.

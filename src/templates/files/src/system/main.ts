@@ -18,7 +18,7 @@ async function createWindow() {
   });
 
   await window.loadFile(
-    join(__dirname, '..', '..', 'src', 'ui', 'index.html'),
+    join(__dirname, '..', '..', 'index.html'),
   );
 
   reloadRendererOnChange(window);

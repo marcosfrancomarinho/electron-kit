@@ -49,6 +49,18 @@ function checkTypes() {
   }
 }
 
+function buildStyles() {
+  const cli = resolve(projectRoot, 'node_modules', '@tailwindcss', 'cli', 'dist', 'index.mjs');
+  const result = spawnSync(process.execPath, [
+    cli,
+    '--input', 'src/ui/style.css',
+    '--output', 'kit_electron/cache/style.css',
+  ], { cwd: projectRoot, stdio: 'inherit' });
+
+  if (result.error) throw result.error;
+  if (result.status !== 0) throw new Error('Tailwind CSS compilation failed.');
+}
+
 async function buildRenderer() {
   await build({
     absWorkingDir: projectRoot,
@@ -59,6 +71,7 @@ async function buildRenderer() {
     format: 'iife',
     target: 'es2022',
   });
+  buildStyles();
 }
 
 async function compileAll() {
@@ -178,6 +191,7 @@ async function main() {
   await rebuild('main');
 
   const watchers = [
+    watch(resolve(projectRoot, 'index.html'), () => schedule('ui')),
     watch(resolve(projectRoot, 'src', 'ui'), { recursive: true }, () => schedule('ui')),
     watch(resolve(projectRoot, 'src', 'system'), { recursive: true }, () => schedule('main')),
     watch(resolve(projectRoot, 'kit_electron', 'runtime'), { recursive: true }, () => schedule('main')),

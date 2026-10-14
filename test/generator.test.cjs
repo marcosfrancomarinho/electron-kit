@@ -68,7 +68,7 @@ async function packageJson(project) {
 function commonFiles(project) {
   return [
     'src/system/main.ts',
-    'src/ui/index.html',
+    'index.html',
     'src/ui/style.css',
     'src/ui/main.tsx',
     'src/ui/App.tsx',
@@ -94,6 +94,7 @@ describe('create-kit-electron', () => {
     }
 
     assert.equal(existsSync(join(project, 'src/ui/main.ts')), false);
+    assert.equal(existsSync(join(project, 'src/ui/index.html')), false);
     for (const oldFile of [
       'main.ts',
       'global.d.ts',
@@ -159,6 +160,13 @@ describe('create-kit-electron', () => {
 
     assert.equal(browser.includes('../../src/system/providers.js'), true);
     assert.equal(main.includes("import './providers.js'"), true);
+    assert.equal(main.includes("join(__dirname, '..', '..', 'index.html')"), true);
+    const html = await readFile(join(project, 'index.html'), 'utf8');
+    assert.equal(html.includes('./kit_electron/cache/browser.js'), true);
+    assert.equal(html.includes('./kit_electron/cache/style.css'), true);
+    assert.equal(dev.includes("watch(resolve(projectRoot, 'index.html')"), true);
+    assert.equal(dev.includes("buildStyles();"), true);
+    assert.equal(pack.includes("'kit_electron/cache/style.css'"), true);
     assert.equal(providers.includes(".register('version'"), true);
     assert.equal(dev.includes("watch(resolve(projectRoot, 'main.ts')"), false);
     assert.equal(dev.includes("'bridge'"), false);
