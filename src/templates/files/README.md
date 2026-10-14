@@ -1,5 +1,7 @@
 # Kit Electron App
 
+**Idioma:** Português (Brasil) · [English](README.en.md)
+
 Projeto gerado com [Create Kit Electron](https://github.com/marcosfrancomarinho/electron-kit): Electron + React + TypeScript + Tailwind CSS.
 
 ## Começar
@@ -74,7 +76,3 @@ Não existe `npm run type`: a verificação TypeScript já faz parte de `dev` e 
 ## Segurança
 
 A janela usa `contextIsolation: true` e `nodeIntegration: false`. Evite expor operações não confiáveis nos providers.
-
----
-
-**English:** Application code lives in `src/ui` (React) and `src/system` (Electron/Node.js). Internal build and IPC files live in `kit_electron`. Run `npm install`, then `npm run dev` or `npm run package`; both scripts check TypeScript automatically.

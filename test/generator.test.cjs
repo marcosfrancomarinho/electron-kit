@@ -80,6 +80,8 @@ function commonFiles(project) {
     'kit_electron/runtime/browser.ts',
     'kit_electron/runtime/shared.ts',
     'tsconfig.json',
+    'README.md',
+    'README.en.md',
   ].map((path) => join(project, path));
 }
 
@@ -117,6 +119,19 @@ describe('create-kit-electron', () => {
     assert.equal(pkg.devDependencies['@types/react'].startsWith('^19'), true);
     assert.equal(pkg.devDependencies['@types/react-dom'].startsWith('^19'), true);
     assert.equal(pkg.main, 'kit_electron/cache/bundle.cjs');
+  });
+
+  it('generates separate Portuguese and English READMEs', async () => {
+    const { project } = await generate();
+    const portuguese = await readFile(join(project, 'README.md'), 'utf8');
+    const english = await readFile(join(project, 'README.en.md'), 'utf8');
+
+    assert.equal(portuguese.includes('[English](README.en.md)'), true);
+    assert.equal(english.includes('[Português (Brasil)](README.md)'), true);
+    assert.equal(portuguese.includes('## Começar'), true);
+    assert.equal(english.includes('## Get started'), true);
+    assert.equal(portuguese.includes('npm run dev'), true);
+    assert.equal(english.includes('npm run package'), true);
   });
 
   it('keeps application code under src', async () => {

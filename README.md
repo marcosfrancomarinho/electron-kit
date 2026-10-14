@@ -1,5 +1,7 @@
 # Create Kit Electron
 
+**Idioma:** Português (Brasil) · [English](README.en.md)
+
 Crie aplicativos desktop com **Electron + React + TypeScript + Tailwind CSS**, sem configurar toda a infraestrutura do zero.
 
 O Kit Electron gera uma base enxuta, com comunicação tipada entre a interface e o Node.js. **Não impõe arquitetura** ao seu código.
@@ -46,7 +48,8 @@ meu-app/
 │       └── shared.ts
 ├── package.json
 ├── tsconfig.json
-└── README.md
+├── README.md
+└── README.en.md
 ```
 
 **`src/` é sua aplicação.** Use `src/ui` para a interface e `src/system` para funcionalidades que precisam do Electron ou do Node.js. A pasta `kit_electron/` contém os arquivos internos de compilação e comunicação.
@@ -95,20 +98,3 @@ O resultado fica em `release/`. O desenvolvimento cria uma pasta temporária `ki
 ## Segurança
 
 As janelas geradas utilizam `contextIsolation: true` e `nodeIntegration: false`. Apenas as funcionalidades registradas como providers ficam disponíveis para a interface.
-
----
-
-## English
-
-**Create Kit Electron** is a minimal starter generator for Electron, React, TypeScript and Tailwind CSS. It keeps your app in `src/ui` (React) and `src/system` (Electron/Node.js), with internal tooling under `kit_electron/`. No application architecture is enforced.
-
-```bash
-npx create-kit-electron
-cd my-app
-npm install
-npm run dev
-```
-
-Use `npm run dev` to develop and `npm run package` to build installers. Both commands check TypeScript automatically. Packaging targets: `win`, `linux`, `mac`. Installers are written to `release/`.
-
-Register functions in `src/system/providers.ts` with `providers.register(token, fn)`; invoke them in React with `browser.get(token)(...args)`. The bridge uses IPC with context isolation enabled.
